@@ -30,20 +30,22 @@ A daily phonics lesson planner for Su Ann to use when teaching her daughter Ella
 2. Run: `npx serve .` (requires Node.js) **or** use the VS Code Live Server extension
 3. Open `http://localhost:3000` in your browser
 
-### To put it on your phone (GitHub Pages — recommended)
-1. Create a free account at https://github.com
-2. Create a new repository called `ella-phonics` (set it to **Public**)
-3. Upload all files from `C:\Users\Su Ann\Ella Phonics\` to the repository
-4. Go to the repo → Settings → Pages → Source: **Deploy from branch** → branch: **main** → folder: **/ (root)**
-5. After ~2 minutes, your app will be live at: `https://YOUR-USERNAME.github.io/ella-phonics/`
-6. Open that URL on your phone in Chrome/Safari
-7. Tap the share/menu button → "Add to Home Screen"
-8. The app icon will appear on your home screen and work offline!
+### Live URL (already deployed)
+**https://wongsuann1991-droid.github.io/ellaphonics/**
 
-### Updating the app
-- Edit files on your computer
-- Re-upload the changed files to GitHub
-- The phone app will update automatically next time you open it with internet
+GitHub repo: https://github.com/wongsuann1991-droid/ellaphonics
+
+The app is already live and installed on Su Ann's phone home screen.
+
+### Updating the app (for future changes)
+1. Edit the relevant file(s) in `C:\Users\Su Ann\Ella Phonics\`
+2. Open Command Prompt in that folder and run:
+   ```
+   git add -A
+   git commit -m "describe what you changed"
+   git push
+   ```
+3. GitHub Pages will update automatically within ~1 minute
 
 ## Curriculum structure
 - **42 sounds** across 7 groups (full Jolly Phonics sequence)
@@ -84,11 +86,16 @@ Built and visually tested all core files:
 - "Jump to Day" selector works — tested jumping to Day 19 (Group 4, "ai")
 - Day counter and group label update correctly
 
+**Deployed to GitHub Pages ✓**
+- Git repo initialised and pushed to: https://github.com/wongsuann1991-droid/ellaphonics
+- GitHub Pages enabled — live at: https://wongsuann1991-droid.github.io/ellaphonics/
+- App installed on Su Ann's phone home screen
+- Su Ann set starting day to Day 19 (Group 4, "ai") — where Ella currently is
+
 **Next steps for next session:**
-- [ ] Set up GitHub Pages deployment so Su Ann can access it on her phone
-- [ ] Test offline behaviour once deployed (service worker caching after first load)
-- [ ] Consider adding a "Done today ✓" button to mark a lesson as completed with a date stamp (so Su Ann can track which days she has actually taught)
+- [ ] Consider adding a "Done today ✓" button to mark a lesson as completed with a date stamp (so Su Ann can track which days she has actually taught vs just visited)
 - [ ] Consider adding a simple notes field per lesson (e.g. "Ella struggled with 'snail'")
+- [ ] Test offline behaviour — open the app on phone with WiFi off to confirm service worker is caching correctly
 
 ---
 
