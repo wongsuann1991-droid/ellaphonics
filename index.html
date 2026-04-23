@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#7c5cbf" />
+  <meta name="description" content="Daily Jolly Phonics lesson planner for Ella" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Ella Phonics" />
+  <link rel="apple-touch-icon" href="icons/icon.svg" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="style.css" />
+  <title>Ella Phonics</title>
+</head>
+<body>
+
+  <!-- ── HEADER ─────────────────────────────────────────── -->
+  <header class="app-header">
+    <div class="header-left">
+      <span class="app-title">Ella Phonics</span>
+    </div>
+    <div class="header-right">
+      <button class="icon-btn" id="menuBtn" aria-label="Open menu">&#9776;</button>
+    </div>
+  </header>
+
+  <!-- ── MAIN LESSON VIEW ───────────────────────────────── -->
+  <main id="lessonView" class="view active">
+    <div class="day-label" id="dayLabel">Day 1 &middot; Group 1</div>
+
+    <!-- Sound Card -->
+    <section class="card card-sound" id="soundCard">
+      <div class="card-header">
+        <span class="card-icon">&#127908;</span>
+        <span class="card-title">Today's Sound</span>
+      </div>
+      <div class="sound-display" id="soundSpelling"></div>
+      <div class="sound-phoneme" id="soundPhoneme"></div>
+      <div class="sound-keywords" id="soundKeywords"></div>
+      <div class="sound-action-label">Jolly Action:</div>
+      <div class="sound-action" id="soundAction"></div>
+    </section>
+
+    <!-- Game Card -->
+    <section class="card card-game" id="gameCard">
+      <div class="card-header">
+        <span class="card-icon">&#127918;</span>
+        <span class="card-title" id="gameTitle">Game</span>
+      </div>
+      <div class="card-body" id="gameBody"></div>
+    </section>
+
+    <!-- Worksheet Card -->
+    <section class="card card-worksheet" id="worksheetCard">
+      <div class="card-header">
+        <span class="card-icon">&#128196;</span>
+        <span class="card-title" id="worksheetTitle">Worksheet</span>
+      </div>
+      <div class="card-body" id="worksheetBody"></div>
+    </section>
+
+    <!-- Spelling List Card -->
+    <section class="card card-spelling" id="spellingCard">
+      <div class="card-header">
+        <span class="card-icon">&#9999;&#65039;</span>
+        <span class="card-title">Spelling List</span>
+      </div>
+      <ul class="spelling-list" id="spellingList"></ul>
+    </section>
+
+    <!-- Navigation -->
+    <nav class="lesson-nav">
+      <button class="nav-btn" id="prevBtn" aria-label="Previous day">&larr; Back</button>
+      <button class="nav-btn nav-btn-primary" id="nextBtn" aria-label="Next day">Next Day &rarr;</button>
+    </nav>
+  </main>
+
+  <!-- ── MENU / SETTINGS VIEW ───────────────────────────── -->
+  <div id="menuOverlay" class="overlay hidden"></div>
+  <aside id="menuPanel" class="menu-panel hidden">
+    <div class="menu-header">
+      <span class="menu-title">Menu</span>
+      <button class="icon-btn" id="closeMenuBtn" aria-label="Close menu">&times;</button>
+    </div>
+
+    <div class="menu-section">
+      <label class="menu-label" for="dayPicker">Jump to Day</label>
+      <div class="day-picker-row">
+        <select id="dayPicker" class="day-select"></select>
+        <button class="btn-secondary" id="goToDay">Go</button>
+      </div>
+    </div>
+
+    <div class="menu-section">
+      <div class="menu-label">Progress</div>
+      <div id="progressSummary" class="progress-summary"></div>
+    </div>
+
+    <div class="menu-section">
+      <div class="curriculum-list" id="curriculumList"></div>
+    </div>
+
+    <div class="menu-section">
+      <button class="btn-danger" id="resetBtn">Reset Progress</button>
+    </div>
+  </aside>
+
+  <!-- ── SCRIPTS ────────────────────────────────────────── -->
+  <script src="curriculum.js"></script>
+  <script src="app.js"></script>
+  <script>
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').catch(() => {});
+      });
+    }
+  </script>
+</body>
+</html>

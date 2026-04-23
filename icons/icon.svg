@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Background -->
+  <rect width="512" height="512" rx="96" fill="#7c5cbf"/>
+  <!-- Book shape -->
+  <rect x="100" y="130" width="140" height="200" rx="12" fill="#ffffff" opacity="0.95"/>
+  <rect x="272" y="130" width="140" height="200" rx="12" fill="#ffffff" opacity="0.85"/>
+  <!-- Spine -->
+  <rect x="234" y="130" width="44" height="200" rx="6" fill="#5a3fa0"/>
+  <!-- Lines on left page -->
+  <rect x="120" y="170" width="100" height="8" rx="4" fill="#ede9f8"/>
+  <rect x="120" y="194" width="80" height="8" rx="4" fill="#ede9f8"/>
+  <rect x="120" y="218" width="90" height="8" rx="4" fill="#ede9f8"/>
+  <rect x="120" y="242" width="70" height="8" rx="4" fill="#ede9f8"/>
+  <!-- Letter on right page -->
+  <text x="342" y="256" font-family="system-ui, sans-serif" font-size="96" font-weight="900"
+        fill="#7c5cbf" text-anchor="middle" dominant-baseline="middle">a</text>
+  <!-- Star accent -->
+  <text x="390" y="370" font-size="56" font-family="sans-serif" text-anchor="middle">⭐</text>
+</svg>
