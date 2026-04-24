@@ -27,7 +27,6 @@
   --ink-4:   #a8956a;
   --ink-5:   #c8b080;
   --cur-bg:  #ede4cc;
-  --done-op: 0.42;
 }
 
 html, body {
@@ -80,23 +79,6 @@ html, body {
 
 .tb-spacer { flex: 1; }
 
-.mode-toggle {
-  display: flex;
-  border: 1px solid var(--p4);
-}
-
-.mode-btn {
-  padding: 6px 18px;
-  background: transparent;
-  color: var(--ink-3);
-  border: none;
-  cursor: pointer;
-  font-family: 'Lora', serif;
-  font-size: 12px;
-  transition: background 0.2s, color 0.2s;
-}
-.mode-btn.active { background: var(--ink); color: var(--p1); }
-.mode-btn + .mode-btn { border-left: 1px solid var(--p4); }
 
 .tb-back {
   font-family: 'Lora', serif;
@@ -304,9 +286,6 @@ html, body {
 }
 .day-cell:last-child { border-right: none; }
 .day-cell:hover { background: var(--p2); }
-.day-cell.done-cell { opacity: var(--done-op); }
-.day-cell.current-cell { background: var(--cur-bg); }
-.day-cell.current-cell:hover { background: #e4d9be; }
 
 .dc-label {
   font-family: 'Lora', serif;
@@ -340,21 +319,6 @@ html, body {
   line-height: 1.3;
 }
 
-.dc-done-tick {
-  position: absolute;
-  top: 10px; right: 10px;
-  font-family: 'Lora', serif;
-  font-size: 9px;
-  color: var(--ink-2);
-}
-
-.dc-current-dot {
-  position: absolute;
-  top: 10px; right: 10px;
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--ink-2);
-}
 
 /* ── Teaching notes ─────────────────────────────────────── */
 .teaching-notes {
@@ -426,16 +390,13 @@ html, body {
 <div id="shell">
 
   <div id="topbar">
+    <a class="tb-back" href="index.html">&#8592; Home</a>
+    <div class="tb-divider"></div>
     <div class="tb-wordmark">
       <div class="tb-name">Frankel Phonics</div>
     </div>
-    <div class="tb-divider"></div>
-    <div class="mode-toggle">
-      <button class="mode-btn active" data-mode="teaching">Teaching</button>
-      <button class="mode-btn" data-mode="student">Student</button>
-    </div>
     <div class="tb-spacer"></div>
-    <a class="tb-back" href="planner.html">&#8592; Daily Planner</a>
+    <a class="tb-back" href="planner.html">Daily Planner &#8594;</a>
   </div>
 
   <div id="scrollArea"></div>
@@ -450,21 +411,18 @@ const STORAGE_KEY = 'gp_dash_v1';
 const DAY_KEY     = 'ella_phonics_day';
 
 let state = {
-  mode: 'teaching',
   currentDay: parseInt(localStorage.getItem(DAY_KEY) || '1', 10),
   open: {}
 };
 
 try {
   const s = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-  if (s.mode) state.mode = s.mode;
   if (s.open) state.open = s.open;
 } catch(e) {}
 
 function save() {
   try {
-    localStorage.setItem(STORAGE_KEY,
-      JSON.stringify({ mode: state.mode, open: state.open }));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ open: state.open }));
   } catch(e) {}
 }
 
@@ -479,9 +437,6 @@ function ds(s) {
 
 /* ── Render ─────────────────────────────────────────────── */
 function render() {
-  document.querySelectorAll('.mode-btn').forEach(b =>
-    b.classList.toggle('active', b.dataset.mode === state.mode));
-
   const area = document.getElementById('scrollArea');
   area.innerHTML = '';
 
@@ -523,20 +478,13 @@ function render() {
       let dayCellsHtml = '';
       if (!isReview) {
         week.sounds.slice(0, 5).forEach((sound, di) => {
-          const dayNum    = weekStartDay + di;
-          const isDone    = dayNum < state.currentDay;
-          const isCurrent = dayNum === state.currentDay;
-          const info      = D.sounds[sound] || { w: [] };
-          const soundStr  = ds(sound);
-          const isLong    = soundStr.length > 2;
+          const dayNum   = weekStartDay + di;
+          const info     = D.sounds[sound] || { w: [] };
+          const soundStr = ds(sound);
+          const isLong   = soundStr.length > 2;
 
           dayCellsHtml +=
-            '<div class="day-cell' +
-              (isDone    ? ' done-cell'    : '') +
-              (isCurrent ? ' current-cell' : '') +
-            '" data-day="' + dayNum + '">' +
-              (isDone    ? '<div class="dc-done-tick">&#10003;</div>' : '') +
-              (isCurrent ? '<div class="dc-current-dot"></div>'       : '') +
+            '<div class="day-cell" data-day="' + dayNum + '">' +
               '<div class="dc-label">' + D.days[di].slice(0,3).toUpperCase() + ' \u00b7 ' + dayNum + '</div>' +
               '<div class="dc-sound' + (isLong ? ' long' : '') + '">' + soundStr + '</div>' +
               '<div class="dc-words">' +
@@ -546,8 +494,8 @@ function render() {
         });
       }
 
-      const notesHtml = state.mode === 'teaching' ? (
-        '<div class="teaching-notes' + (state.mode === 'teaching' ? ' visible' : '') + '">' +
+      const notesHtml =
+        '<div class="teaching-notes visible">' +
           '<div class="tn-title">Teaching Notes</div>' +
           '<ul class="tn-list">' +
             '<li>Introduce each new sound with the Jolly Phonics action and story</li>' +
@@ -555,8 +503,7 @@ function render() {
             '<li>Blending practice: adult says phonemes, student blends into word</li>' +
             '<li>Dictation: call words aloud, student segments and writes</li>' +
           '</ul>' +
-        '</div>'
-      ) : '';
+        '</div>';
 
       row.innerHTML =
         '<div class="week-meta" data-week="' + week.week + '">' +
@@ -643,10 +590,6 @@ function moveTooltip(e) {
   t.style.top  = Math.min(e.clientY + 16, window.innerHeight - 120) + 'px';
 }
 
-document.querySelector('.mode-toggle').addEventListener('click', e => {
-  const btn = e.target.closest('.mode-btn');
-  if (btn) { state.mode = btn.dataset.mode; save(); render(); }
-});
 
 /* ── Fade in ────────────────────────────────────────────── */
 document.body.style.opacity = '0';
