@@ -8,14 +8,200 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="Ella Phonics" />
-  <link rel="apple-touch-icon" href="icons/icon.svg" />
   <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="style.css" />
   <title>Ella Phonics</title>
+  <style>
+    /* ── DASHBOARD ─────────────────────────────────────── */
+    #dashboardView {
+      display: none;
+      padding: 0 0 32px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    #dashboardView.active { display: block; }
+
+    .dash-hero {
+      background: var(--purple);
+      color: #fff;
+      padding: 20px 20px 24px;
+      text-align: center;
+    }
+    .dash-hero-emoji { font-size: 2.8rem; margin-bottom: 6px; }
+    .dash-hero-title { font-size: 1.5rem; font-weight: 800; letter-spacing: 0.3px; }
+    .dash-hero-sub { font-size: 0.85rem; opacity: 0.8; margin-top: 4px; }
+
+    .dash-progress-bar-wrap {
+      background: rgba(255,255,255,0.25);
+      border-radius: 99px;
+      height: 8px;
+      margin: 14px auto 0;
+      max-width: 280px;
+      overflow: hidden;
+    }
+    .dash-progress-bar-fill {
+      height: 100%;
+      background: #fff;
+      border-radius: 99px;
+      transition: width 0.4s;
+    }
+    .dash-progress-label {
+      font-size: 0.75rem;
+      opacity: 0.85;
+      margin-top: 6px;
+    }
+
+    .dash-groups { padding: 16px 16px 0; display: flex; flex-direction: column; gap: 12px; }
+
+    .group-card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(44,34,80,0.09);
+      overflow: hidden;
+    }
+
+    .group-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .group-card-header:active { background: var(--purple-light); }
+
+    .group-card-left { display: flex; align-items: center; gap: 12px; }
+
+    .group-badge {
+      width: 40px; height: 40px;
+      border-radius: 12px;
+      background: var(--purple);
+      color: #fff;
+      font-size: 0.78rem;
+      font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center;
+      line-height: 1.1;
+      flex-shrink: 0;
+    }
+
+    .group-card-title { font-size: 0.95rem; font-weight: 700; color: var(--text); }
+    .group-card-sounds { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
+
+    .group-chevron {
+      font-size: 1rem;
+      color: var(--text-muted);
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+    .group-card.open .group-chevron { transform: rotate(180deg); }
+
+    .group-day-grid {
+      display: none;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      padding: 0 14px 14px;
+    }
+    .group-card.open .group-day-grid { display: grid; }
+
+    .day-tile {
+      background: var(--purple-light);
+      border-radius: 12px;
+      padding: 12px 10px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      text-align: center;
+      border: 2px solid transparent;
+      transition: border-color 0.15s, background 0.15s;
+      -webkit-tap-highlight-color: transparent;
+      position: relative;
+    }
+    .day-tile:active { background: #ddd6f5; }
+    .day-tile.current-day { border-color: var(--purple); }
+    .day-tile.done-day { opacity: 0.55; }
+
+    .day-tile-day {
+      font-size: 0.62rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+    }
+    .day-tile-spelling {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--purple);
+      line-height: 1;
+    }
+    .day-tile-sound {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+    .day-tile-keywords {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+    .day-tile-check {
+      position: absolute;
+      top: 6px; right: 8px;
+      font-size: 0.75rem;
+      color: var(--green);
+      font-weight: 800;
+    }
+    .day-tile.current-day .day-tile-spelling { color: var(--purple); }
+
+    /* ── LESSON VIEW BACK BUTTON ───────────────────────── */
+    .lesson-back-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 14px 20px 0;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .back-btn {
+      background: none;
+      border: none;
+      color: var(--purple);
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 8px 0;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .back-btn:active { opacity: 0.6; }
+
+    /* ── VIEW TRANSITIONS ──────────────────────────────── */
+    .view, #dashboardView {
+      animation: none;
+    }
+    @keyframes slideInRight {
+      from { transform: translateX(100%); opacity: 0; }
+      to   { transform: translateX(0);    opacity: 1; }
+    }
+    @keyframes slideOutLeft {
+      from { transform: translateX(0);    opacity: 1; }
+      to   { transform: translateX(-30%); opacity: 0; }
+    }
+    .slide-in  { animation: slideInRight 0.22s ease both; }
+    .slide-out { animation: slideOutLeft 0.22s ease both; }
+
+    /* Hide header worksheet button when in lesson (back button handles nav) */
+    #worksheetLibBtn { display: inline-flex; }
+  </style>
 </head>
 <body>
 
-  <!-- ── HEADER ─────────────────────────────────────────── -->
+  <!-- ── HEADER ───────────────────────────────────────── -->
   <header class="app-header">
     <div class="header-left">
       <span class="app-title">Ella Phonics</span>
@@ -26,12 +212,32 @@
     </div>
   </header>
 
-  <!-- ── MAIN LESSON VIEW ───────────────────────────────── -->
-  <main id="lessonView" class="view active">
-    <div class="day-label" id="dayLabel">Day 1 &middot; Group 1</div>
+  <!-- ── DASHBOARD VIEW ───────────────────────────────── -->
+  <div id="dashboardView">
+    <div class="dash-hero">
+      <div class="dash-hero-emoji">📖</div>
+      <div class="dash-hero-title">Ella Phonics</div>
+      <div class="dash-hero-sub">42 sounds · 7 groups · Jolly Phonics</div>
+      <div class="dash-progress-bar-wrap">
+        <div class="dash-progress-bar-fill" id="dashProgressFill" style="width:0%"></div>
+      </div>
+      <div class="dash-progress-label" id="dashProgressLabel">Day 1 of 42</div>
+    </div>
+    <div class="dash-groups" id="dashGroups"></div>
+  </div>
+
+  <!-- ── LESSON VIEW ──────────────────────────────────── -->
+  <main id="lessonView" class="view">
+    <div class="lesson-back-btn">
+      <button class="back-btn" id="backToDashBtn">&#8592; All Groups</button>
+    </div>
+
+    <div style="padding: 8px 16px 0; max-width:600px; margin:0 auto;">
+      <div class="day-label" id="dayLabel">Day 1 · Group 1</div>
+    </div>
 
     <!-- Sound Card -->
-    <section class="card card-sound" id="soundCard">
+    <section class="card card-sound" id="soundCard" style="max-width:600px;margin:0 auto 14px;margin-left:16px;margin-right:16px;">
       <div class="card-header">
         <span class="card-icon">&#127908;</span>
         <span class="card-title">Today's Sound</span>
@@ -44,7 +250,7 @@
     </section>
 
     <!-- Game Card -->
-    <section class="card card-game" id="gameCard">
+    <section class="card card-game" id="gameCard" style="max-width:600px;margin:0 auto 14px;margin-left:16px;margin-right:16px;">
       <div class="card-header">
         <span class="card-icon">&#127918;</span>
         <span class="card-title" id="gameTitle">Game</span>
@@ -53,7 +259,7 @@
     </section>
 
     <!-- Worksheet Card -->
-    <section class="card card-worksheet" id="worksheetCard">
+    <section class="card card-worksheet" id="worksheetCard" style="max-width:600px;margin:0 auto 14px;margin-left:16px;margin-right:16px;">
       <div class="card-header">
         <span class="card-icon">&#128196;</span>
         <span class="card-title" id="worksheetTitle">Worksheet</span>
@@ -62,7 +268,7 @@
     </section>
 
     <!-- Spelling List Card -->
-    <section class="card card-spelling" id="spellingCard">
+    <section class="card card-spelling" id="spellingCard" style="max-width:600px;margin:0 auto 14px;margin-left:16px;margin-right:16px;">
       <div class="card-header">
         <span class="card-icon">&#9999;&#65039;</span>
         <span class="card-title">Spelling List</span>
@@ -71,20 +277,19 @@
     </section>
 
     <!-- Navigation -->
-    <nav class="lesson-nav">
+    <nav class="lesson-nav" style="max-width:600px;margin:0 auto 24px;padding:0 16px;">
       <button class="nav-btn" id="prevBtn" aria-label="Previous day">&larr; Back</button>
       <button class="nav-btn nav-btn-primary" id="nextBtn" aria-label="Next day">Next Day &rarr;</button>
     </nav>
   </main>
 
-  <!-- ── MENU / SETTINGS VIEW ───────────────────────────── -->
+  <!-- ── MENU PANEL ────────────────────────────────────── -->
   <div id="menuOverlay" class="overlay hidden"></div>
   <aside id="menuPanel" class="menu-panel hidden">
     <div class="menu-header">
       <span class="menu-title">Menu</span>
       <button class="icon-btn" id="closeMenuBtn" aria-label="Close menu">&times;</button>
     </div>
-
     <div class="menu-section">
       <label class="menu-label" for="dayPicker">Jump to Day</label>
       <div class="day-picker-row">
@@ -92,16 +297,13 @@
         <button class="btn-secondary" id="goToDay">Go</button>
       </div>
     </div>
-
     <div class="menu-section">
       <div class="menu-label">Progress</div>
       <div id="progressSummary" class="progress-summary"></div>
     </div>
-
     <div class="menu-section">
       <div class="curriculum-list" id="curriculumList"></div>
     </div>
-
     <div class="menu-section">
       <button class="btn-danger" id="resetBtn">Reset Progress</button>
     </div>
@@ -110,31 +312,393 @@
   <!-- ── WORKSHEET LIBRARY VIEW ───────────────────────── -->
   <main id="worksheetLibView" class="view">
     <div class="lib-header">
-      <button class="icon-btn lib-back-btn" id="libBackBtn" aria-label="Back to lesson">&#8592; Back</button>
+      <button class="icon-btn lib-back-btn" id="libBackBtn" aria-label="Back">&#8592; Back</button>
       <span class="lib-title">Worksheet Library</span>
     </div>
     <p class="lib-subtitle">Tap any worksheet to open it full screen.</p>
     <div class="worksheet-grid" id="worksheetGrid"></div>
   </main>
 
-  <!-- ── WORKSHEET LIGHTBOX ────────────────────────────── -->
+  <!-- ── WORKSHEET LIGHTBOX ───────────────────────────── -->
   <div id="lightboxOverlay" class="lightbox-overlay hidden">
     <button class="lightbox-close" id="lightboxClose" aria-label="Close">&times;</button>
     <div class="lightbox-label" id="lightboxLabel"></div>
     <img class="lightbox-img" id="lightboxImg" src="" alt="Worksheet" />
   </div>
 
-  <!-- ── SCRIPTS ────────────────────────────────────────── -->
   <script src="curriculum.js"></script>
   <script src="worksheets.js"></script>
-  <script src="app.js"></script>
   <script>
-    // Register service worker
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js').catch(() => {});
-      });
+  // ── STATE ──────────────────────────────────────────────────
+  const STORAGE_KEY = 'ella_phonics_day';
+
+  function getCurrentDay() {
+    return parseInt(localStorage.getItem(STORAGE_KEY) || '1', 10);
+  }
+  function setCurrentDay(day) {
+    const clamped = Math.max(1, Math.min(day, CURRICULUM.length));
+    localStorage.setItem(STORAGE_KEY, String(clamped));
+    return clamped;
+  }
+
+  // ── VIEW MANAGEMENT ────────────────────────────────────────
+  const dashboardView    = document.getElementById('dashboardView');
+  const lessonView       = document.getElementById('lessonView');
+  const worksheetLibView = document.getElementById('worksheetLibView');
+
+  function showDashboard() {
+    worksheetLibView.classList.remove('active');
+    lessonView.classList.remove('active');
+    dashboardView.classList.add('active');
+    renderDashboard();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function showLesson(dayNumber, fromDashboard) {
+    dashboardView.classList.remove('active');
+    worksheetLibView.classList.remove('active');
+    if (fromDashboard) {
+      lessonView.classList.add('slide-in');
+      lessonView.addEventListener('animationend', () => lessonView.classList.remove('slide-in'), { once: true });
     }
+    lessonView.classList.add('active');
+    renderLesson(dayNumber);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function showLibrary() {
+    lessonView.classList.remove('active');
+    dashboardView.classList.remove('active');
+    worksheetLibView.classList.add('active');
+    renderWorksheetGrid();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function hideLibrary() {
+    worksheetLibView.classList.remove('active');
+    // Return to whichever was active before
+    if (lessonView._wasActive) {
+      lessonView.classList.add('active');
+    } else {
+      showDashboard();
+    }
+  }
+
+  // ── DASHBOARD ──────────────────────────────────────────────
+  function renderDashboard() {
+    const currentDay = getCurrentDay();
+    const total = CURRICULUM.length;
+    const pct = Math.round(((currentDay - 1) / total) * 100);
+
+    document.getElementById('dashProgressFill').style.width = pct + '%';
+    document.getElementById('dashProgressLabel').textContent =
+      `Day ${currentDay} of ${total} — ${pct}% complete`;
+
+    const container = document.getElementById('dashGroups');
+    container.innerHTML = '';
+
+    // Group lessons
+    const groups = {};
+    CURRICULUM.forEach(lesson => {
+      if (!groups[lesson.group]) groups[lesson.group] = [];
+      groups[lesson.group].push(lesson);
+    });
+
+    const groupColors = ['#7c5cbf','#4caf82','#e8a020','#3a8fd4','#e05080','#20b2a8','#9b59b6'];
+
+    Object.entries(groups).forEach(([groupNum, lessons], gi) => {
+      const gNum = parseInt(groupNum);
+      const isCurrentGroup = lessons.some(l => l.id === currentDay);
+      const color = groupColors[(gNum - 1) % groupColors.length];
+
+      const soundNames = lessons.map(l => l.spelling).join(', ');
+      const doneCount = lessons.filter(l => l.id < currentDay).length;
+
+      const card = document.createElement('div');
+      card.className = 'group-card' + (isCurrentGroup ? ' open' : '');
+      card.innerHTML = `
+        <div class="group-card-header" data-group="${gNum}">
+          <div class="group-card-left">
+            <div class="group-badge" style="background:${color}">
+              Group<br>${gNum}
+            </div>
+            <div>
+              <div class="group-card-title">Group ${gNum} — ${lessons.length} sounds</div>
+              <div class="group-card-sounds">${soundNames}</div>
+            </div>
+          </div>
+          <span class="group-chevron">▾</span>
+        </div>
+        <div class="group-day-grid">
+          ${lessons.map(lesson => {
+            const isCurrent = lesson.id === currentDay;
+            const isDone = lesson.id < currentDay;
+            return `<div class="day-tile${isCurrent ? ' current-day' : ''}${isDone ? ' done-day' : ''}"
+              data-day="${lesson.id}">
+              ${isDone ? '<span class="day-tile-check">✓</span>' : ''}
+              <div class="day-tile-day">Day ${lesson.id}</div>
+              <div class="day-tile-spelling" style="color:${color}">${lesson.spelling}</div>
+              <div class="day-tile-sound">${lesson.sound}</div>
+              <div class="day-tile-keywords">${lesson.keywords.slice(0,2).join(' · ')}</div>
+            </div>`;
+          }).join('')}
+        </div>`;
+
+      // Toggle group open/close
+      card.querySelector('.group-card-header').addEventListener('click', () => {
+        card.classList.toggle('open');
+      });
+
+      // Day tile clicks
+      card.querySelectorAll('.day-tile').forEach(tile => {
+        tile.addEventListener('click', () => {
+          const day = parseInt(tile.dataset.day, 10);
+          setCurrentDay(day);
+          showLesson(day, true);
+          updateCurriculumList();
+        });
+      });
+
+      container.appendChild(card);
+    });
+  }
+
+  // ── GAME DESCRIPTIONS ─────────────────────────────────────
+  const GAME_TITLES = {
+    soundHunt:'Sound Hunt', iSpy:'I Spy', flashcardFlap:'Flashcard Flap',
+    clapAndCount:'Clap & Count', wordBuilding:'Word Building',
+    drawAndLabel:'Draw & Label', sillySentences:'Silly Sentences', beatTheClock:'Beat the Clock'
+  };
+
+  function renderGameText(lesson) {
+    const s = lesson.spelling, snd = lesson.sound;
+    const words = lesson.spellingList, keys = lesson.keywords;
+    switch (lesson.gameType) {
+      case 'soundHunt':     return `Go on a sound hunt! Find 5 things whose name contains the ${snd} sound. Try: <em>${keys.slice(0,4).join(', ')}</em>.`;
+      case 'iSpy':          return `Play I Spy using the <strong>${snd}</strong> sound. Take turns — let Ella be the spy too! Try: <em>${keys.slice(0,5).join(', ')}</em>.`;
+      case 'flashcardFlap': return `Write "<strong>${s}</strong>" on a card, flash it to Ella. Take turns: she picks a word, you write it, she reads it back. Words: <em>${words.join(', ')}</em>.`;
+      case 'clapAndCount':  return `Say each word slowly and clap once per sound (phoneme), not per letter. "rain" = 3 claps: /r/–/ai/–/n/. Words: <em>${words.join(', ')}</em>.`;
+      case 'wordBuilding':  return `Build spelling list words using letter tiles or paper squares. Mix up and rebuild! Words: <em>${words.join(', ')}</em>.`;
+      case 'drawAndLabel':  return `Ask Ella to draw 3 things with the ${snd} sound, then write the word under each. Ideas: <em>${keys.slice(0,4).join(', ')}</em>.`;
+      case 'sillySentences':return `Make silly sentences together using words from the list. Try: <em>${words.join(', ')}</em>.`;
+      case 'beatTheClock':  return `60-second timer — say as many ${snd} words as possible! Tally them and try to beat your score next time.`;
+      default: return '';
+    }
+  }
+
+  // ── WORKSHEET DESCRIPTIONS ────────────────────────────────
+  const WORKSHEET_TITLES = {
+    traceAndCopy:'Trace & Copy', fillInBlank:'Fill in the Blank', sortIt:'Sort It',
+    pictureWordMatch:'Picture–Word Match', sentenceWriting:'Sentence Writing', letterHunt:'Letter Hunt'
+  };
+
+  function renderWorksheetText(lesson) {
+    const s = lesson.spelling, snd = lesson.sound, words = lesson.spellingList;
+    switch (lesson.worksheetType) {
+      case 'traceAndCopy':    return `Write "<strong>${s}</strong>" with a dotted outline for Ella to trace 3 times, then copy 3 times from memory. Finish with: <em>${words[0]}</em> and <em>${words[1]}</em>.`;
+      case 'fillInBlank':     return `Write 4 words leaving a blank where "<strong>${s}</strong>" goes. Ella writes the missing letters. Words: <em>${words.slice(0,4).join(', ')}</em>.`;
+      case 'sortIt':          return `Write 8 words — 4 with ${snd}, 4 without. Ella circles those with today's sound. ${snd} words: <em>${words.join(', ')}</em>.`;
+      case 'pictureWordMatch':return `Draw 4 pictures from the spelling list. Write the word with "<strong>${s}</strong>" missing. Ella fills the gap. Words: <em>${words.slice(0,4).join(', ')}</em>.`;
+      case 'sentenceWriting': return `Ella writes a sentence using a spelling list word. Try: "<em>The ${words[0]} …</em>" or "<em>I can see a ${words[1]} …</em>".`;
+      case 'letterHunt':      return `Flip through a picture book together, finding every word with "<strong>${s}</strong>". Take turns spotting them!`;
+      default: return '';
+    }
+  }
+
+  // ── RENDER LESSON ─────────────────────────────────────────
+  function renderLesson(dayNumber) {
+    const lesson = CURRICULUM[dayNumber - 1];
+    if (!lesson) return;
+    document.getElementById('dayLabel').textContent = `Day ${dayNumber} · Group ${lesson.group}`;
+    document.getElementById('soundSpelling').textContent = lesson.spelling;
+    document.getElementById('soundPhoneme').textContent = lesson.sound;
+    document.getElementById('soundKeywords').textContent = lesson.keywords.slice(0,4).map(w => '"' + w + '"').join('  ·  ');
+    document.getElementById('soundAction').textContent = lesson.action;
+    document.getElementById('gameTitle').textContent = GAME_TITLES[lesson.gameType] || 'Game';
+    document.getElementById('gameBody').innerHTML = renderGameText(lesson);
+    document.getElementById('worksheetTitle').textContent = WORKSHEET_TITLES[lesson.worksheetType] || 'Worksheet';
+    document.getElementById('worksheetBody').innerHTML = renderWorksheetText(lesson);
+    const ul = document.getElementById('spellingList');
+    ul.innerHTML = '';
+    lesson.spellingList.forEach(word => {
+      const li = document.createElement('li');
+      li.textContent = word;
+      ul.appendChild(li);
+    });
+    document.getElementById('prevBtn').disabled = (dayNumber <= 1);
+    document.getElementById('nextBtn').disabled = (dayNumber >= CURRICULUM.length);
+  }
+
+  // ── LESSON NAV ────────────────────────────────────────────
+  document.getElementById('prevBtn').addEventListener('click', () => {
+    const day = setCurrentDay(getCurrentDay() - 1);
+    renderLesson(day);
+    updateCurriculumList();
+  });
+
+  document.getElementById('nextBtn').addEventListener('click', () => {
+    const day = setCurrentDay(getCurrentDay() + 1);
+    renderLesson(day);
+    updateCurriculumList();
+  });
+
+  // Back to dashboard
+  document.getElementById('backToDashBtn').addEventListener('click', showDashboard);
+
+  // Swipe right to go back to dashboard
+  let touchStartX = 0;
+  document.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+  document.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].screenX - touchStartX;
+    if (dx > 80 && lessonView.classList.contains('active')) {
+      showDashboard();
+    }
+  }, { passive: true });
+
+  // ── MENU ──────────────────────────────────────────────────
+  const menuOverlay = document.getElementById('menuOverlay');
+  const menuPanel   = document.getElementById('menuPanel');
+
+  function openMenu() {
+    menuOverlay.classList.remove('hidden');
+    menuPanel.classList.remove('hidden');
+    updateProgressSummary();
+  }
+  function closeMenu() {
+    menuOverlay.classList.add('hidden');
+    menuPanel.classList.add('hidden');
+  }
+
+  document.getElementById('menuBtn').addEventListener('click', openMenu);
+  document.getElementById('closeMenuBtn').addEventListener('click', closeMenu);
+  menuOverlay.addEventListener('click', closeMenu);
+
+  // ── DAY PICKER ────────────────────────────────────────────
+  function populateDayPicker() {
+    const select = document.getElementById('dayPicker');
+    select.innerHTML = '';
+    CURRICULUM.forEach(lesson => {
+      const opt = document.createElement('option');
+      opt.value = lesson.id;
+      opt.textContent = `Day ${lesson.id} — ${lesson.spelling} (${lesson.sound}) — Group ${lesson.group}`;
+      select.appendChild(opt);
+    });
+    select.value = getCurrentDay();
+  }
+
+  document.getElementById('goToDay').addEventListener('click', () => {
+    const val = parseInt(document.getElementById('dayPicker').value, 10);
+    const day = setCurrentDay(val);
+    showLesson(day, false);
+    updateCurriculumList();
+    closeMenu();
+  });
+
+  // ── PROGRESS SUMMARY ──────────────────────────────────────
+  function updateProgressSummary() {
+    const day = getCurrentDay();
+    const total = CURRICULUM.length;
+    const pct = Math.round(((day - 1) / total) * 100);
+    document.getElementById('progressSummary').textContent =
+      `Day ${day} of ${total} (${pct}% through the syllabus)`;
+  }
+
+  // ── CURRICULUM LIST IN MENU ───────────────────────────────
+  function updateCurriculumList() {
+    const container = document.getElementById('curriculumList');
+    const currentDay = getCurrentDay();
+    container.innerHTML = '';
+    let lastGroup = null;
+    CURRICULUM.forEach(lesson => {
+      if (lesson.group !== lastGroup) {
+        lastGroup = lesson.group;
+        const gh = document.createElement('div');
+        gh.className = 'group-header';
+        gh.textContent = `Group ${lesson.group}`;
+        container.appendChild(gh);
+      }
+      const item = document.createElement('div');
+      item.className = 'curriculum-item' +
+        (lesson.id === currentDay ? ' current' : '') +
+        (lesson.id < currentDay ? ' done' : '');
+      item.innerHTML =
+        `<span class="ci-day">Day ${lesson.id}</span>` +
+        `<span class="ci-spelling">${lesson.spelling}</span>` +
+        `<span class="ci-sound">${lesson.sound}</span>` +
+        (lesson.id < currentDay ? `<span class="ci-check">&#10003;</span>` : '');
+      item.addEventListener('click', () => {
+        const day = setCurrentDay(lesson.id);
+        document.getElementById('dayPicker').value = day;
+        showLesson(day, false);
+        updateCurriculumList();
+        closeMenu();
+      });
+      container.appendChild(item);
+    });
+  }
+
+  // ── RESET ─────────────────────────────────────────────────
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    if (confirm('Reset progress back to Day 1?')) {
+      const day = setCurrentDay(1);
+      document.getElementById('dayPicker').value = day;
+      renderLesson(day);
+      updateCurriculumList();
+      showDashboard();
+      closeMenu();
+    }
+  });
+
+  // ── WORKSHEET LIBRARY ─────────────────────────────────────
+  const lightboxOverlay = document.getElementById('lightboxOverlay');
+  const lightboxImg     = document.getElementById('lightboxImg');
+  const lightboxLabel   = document.getElementById('lightboxLabel');
+
+  function renderWorksheetGrid() {
+    const grid = document.getElementById('worksheetGrid');
+    if (grid.childElementCount > 0) return;
+    WORKSHEETS.forEach(ws => {
+      const card = document.createElement('div');
+      card.className = 'ws-card';
+      card.innerHTML =
+        `<img class="ws-thumb" src="${ws.file}" alt="${ws.title}" loading="lazy" />` +
+        `<div class="ws-info"><div class="ws-title">${ws.title}</div><div class="ws-desc">${ws.desc}</div></div>`;
+      card.addEventListener('click', () => openLightbox(ws));
+      grid.appendChild(card);
+    });
+  }
+
+  function openLightbox(ws) {
+    lightboxImg.src = ws.file;
+    lightboxLabel.textContent = ws.title;
+    lightboxOverlay.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    lightboxOverlay.classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+
+  document.getElementById('worksheetLibBtn').addEventListener('click', () => {
+    lessonView._wasActive = lessonView.classList.contains('active');
+    showLibrary();
+  });
+  document.getElementById('libBackBtn').addEventListener('click', hideLibrary);
+  document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+  lightboxOverlay.addEventListener('click', e => { if (e.target === lightboxOverlay) closeLightbox(); });
+
+  // ── INIT ──────────────────────────────────────────────────
+  (function init() {
+    populateDayPicker();
+    updateCurriculumList();
+    showDashboard();
+  })();
+
+  // Service worker
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+  }
   </script>
 </body>
 </html>
