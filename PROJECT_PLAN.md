@@ -134,6 +134,35 @@ Added worksheet library feature:
 
 ---
 
+### Session 3 — 2026-04-23
+**Status: 36-Week Teacher Dashboard added ✓**
+
+Implemented the full Jolly Phonics Teacher Dashboard from the design handoff:
+- `dashboard.html` — standalone page, vanilla HTML/CSS/JS (no React), matches hi-fi prototype
+- `jp-data.js` — copied from design handoff to project root (36 weeks, 3 terms, ~60 sounds)
+- `index.html` — added 📅 calendar icon in header linking to `dashboard.html`
+- `sw.js` bumped to v3 — `dashboard.html` and `jp-data.js` now cached for offline use
+
+**Dashboard features:**
+- Fixed top bar: Jolly Phonics branding + Teaching/Student toggle + "← Daily Planner" back link
+- 220px sidebar: 3 collapsible term sections (Term 1 blue, Term 2 green, Term 3 amber), 36 week rows
+- Week header card showing week number, term name, optional Capitals/Review badges, theme title
+- 5-column Monday–Friday day grid per week, each card showing: sound badge (72×72px), emoji, action (teaching mode only), blending word chips, tricky word (Monday only)
+- Review weeks (9–12) show a special consolidation view instead of day cards
+- Tricky words banner below day grid
+- Teaching Notes panel (teaching mode only, hidden in student mode)
+- localStorage persistence (key `jp_dash_v2`) — remembers selected week between visits
+
+**Tested and confirmed working:**
+- All 36 week buttons render and select correctly
+- Review weeks (e.g. week 9) show the review view (no day cards)
+- Teaching/Student toggle hides/shows action boxes and teaching notes
+- Back link returns to daily planner (`index.html`)
+
+**Pushed to GitHub ✓** — live at https://wongsuann1991-droid.github.io/ellaphonics/
+
+---
+
 ## Possible future features (not yet built)
 - "Done today" button to mark a lesson as completed (with a date stamp)
 - Notes field per lesson (e.g. "Ella struggled with 'snail'")

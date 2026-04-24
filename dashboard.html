@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jolly Phonics Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Nunito',system-ui,sans-serif;background:#F8FAFC;color:#1E293B;height:100vh;overflow:hidden}
+button{font-family:inherit;cursor:pointer;border:none}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:#F1F5F9}
+::-webkit-scrollbar-thumb{background:#CBD5E1;border-radius:3px}
+
+/* ── Shell ─────────────────────────────────────────────── */
+#shell{display:flex;flex-direction:column;height:100vh;overflow:hidden}
+
+/* ── Top Bar ────────────────────────────────────────────── */
+#topbar{
+  display:flex;justify-content:space-between;align-items:center;
+  background:white;border-bottom:2px solid #E2E8F0;
+  padding:12px 24px;flex-shrink:0
+}
+.topbar-left{display:flex;align-items:center;gap:14px}
+.topbar-logo{font-size:28px;line-height:1}
+.topbar-name{font-size:18px;font-weight:900;color:#1E293B;line-height:1}
+.topbar-sub{font-size:12px;font-weight:700;color:#94A3B8}
+.topbar-back{font-size:12px;font-weight:700;color:#94A3B8;text-decoration:none;
+  background:#F1F5F9;border-radius:10px;padding:6px 12px;margin-left:8px;display:inline-block}
+.topbar-back:hover{background:#E2E8F0}
+
+/* ── Toggle ─────────────────────────────────────────────── */
+.toggle-wrap{display:flex;background:#F1F5F9;border-radius:12px;padding:3px;gap:2px}
+.toggle-btn{
+  padding:7px 16px;border-radius:10px;font-weight:800;font-size:13px;
+  background:transparent;color:#94A3B8;box-shadow:none;transition:all .15s
+}
+.toggle-btn.active{background:white;color:#1E293B;box-shadow:0 1px 4px rgba(0,0,0,.12)}
+
+/* ── Body row ───────────────────────────────────────────── */
+#body{display:flex;flex:1;overflow:hidden}
+
+/* ── Sidebar ─────────────────────────────────────────────── */
+#sidebar{
+  width:220px;flex-shrink:0;background:white;
+  border-right:2px solid #E2E8F0;display:flex;flex-direction:column;overflow:hidden
+}
+.sidebar-hdr{
+  padding:16px 16px 12px;border-bottom:2px solid #E2E8F0;
+  font-size:11px;font-weight:800;color:#94A3B8;letter-spacing:1px;text-transform:uppercase
+}
+#termList{overflow:auto;flex:1;padding:8px 0}
+.term-section{margin-bottom:4px}
+.term-btn{
+  width:100%;text-align:left;padding:10px 14px;
+  display:flex;justify-content:space-between;align-items:center;
+  border-left-width:4px;border-left-style:solid
+}
+.term-btn-name{font-weight:900;font-size:12px;line-height:1.2}
+.term-btn-sub{font-weight:600;font-size:10px;color:#94A3B8;margin-top:1px}
+.term-chevron{font-size:14px}
+.week-btn{
+  width:100%;text-align:left;padding:8px 14px 8px 20px;
+  background:transparent;
+  border-right:3px solid transparent;
+  display:flex;align-items:center;justify-content:space-between;
+  transition:background .15s
+}
+.week-btn-num{font-weight:700;font-size:13px;color:#475569;display:block;line-height:1.2}
+.week-btn-theme{
+  font-weight:600;font-size:10px;color:#94A3B8;display:block;margin-top:1px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px
+}
+
+/* ── Week View ───────────────────────────────────────────── */
+#weekView{flex:1;overflow:auto;padding:20px 24px}
+
+/* Week header card */
+.week-hdr{
+  background:white;border-radius:20px;padding:18px 24px;margin-bottom:20px;
+  display:flex;justify-content:space-between;align-items:center;
+  box-shadow:0 2px 8px rgba(0,0,0,.06)
+}
+.week-hdr-badges{display:flex;align-items:center;gap:10px;margin-bottom:4px;flex-wrap:wrap}
+.badge{border-radius:10px;padding:3px 12px;font-size:12px;font-weight:800}
+.badge-sm{border-radius:10px;padding:3px 10px;font-size:11px;font-weight:700}
+.week-hdr-title{font-size:22px;font-weight:900;color:#1E293B}
+
+/* Day grid */
+.day-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+
+/* Day card */
+.day-card{
+  background:white;border-radius:20px;border:2px solid #E2E8F0;
+  overflow:hidden;display:flex;flex-direction:column;
+  box-shadow:0 2px 8px rgba(0,0,0,.06)
+}
+.day-card-hdr{padding:8px 14px}
+.day-card-hdr span{font-weight:800;font-size:13px;color:white}
+.day-card-body{padding:14px 16px;flex:1;display:flex;flex-direction:column;gap:10px}
+
+/* Sound badge row */
+.sound-row{display:flex;align-items:center;gap:12px}
+.sound-badge{
+  border-radius:14px;width:72px;height:72px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:900;line-height:1
+}
+.sound-emoji{font-size:32px}
+
+/* Action section */
+.action-box{
+  background:#F8FAFC;border-radius:12px;padding:8px 12px;
+  border-left-width:3px;border-left-style:solid
+}
+.action-label{
+  font-weight:800;font-size:11px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px
+}
+.action-body{font-size:12px;font-weight:600;color:#475569}
+
+/* Blending section */
+.blend-label{
+  font-size:11px;font-weight:800;color:#94A3B8;text-transform:uppercase;
+  letter-spacing:.5px;margin-bottom:6px
+}
+.word-chips{display:flex;flex-wrap:wrap;gap:5px}
+.word-chip{border-radius:10px;padding:4px 10px;font-size:14px;font-weight:800}
+
+/* Tricky word (Monday card) */
+.tricky-card-section{margin-top:auto}
+.tricky-card-label{
+  font-size:11px;font-weight:800;color:#94A3B8;text-transform:uppercase;
+  letter-spacing:.5px;margin-bottom:5px
+}
+.tricky-card-chips{display:flex;gap:6px;flex-wrap:wrap}
+.tricky-chip{
+  background:#FEF08A;color:#78350F;border-radius:10px;
+  padding:5px 12px;font-weight:900;font-size:16px;border:2px solid #FDE047
+}
+
+/* Tricky words banner */
+.tricky-banner{
+  margin-top:16px;background:#FFFBEB;border-radius:16px;
+  padding:14px 20px;border:2px solid #FDE68A;
+  display:flex;align-items:center;gap:12px
+}
+.tricky-banner-star{font-size:22px}
+.tricky-banner-label{
+  font-size:12px;font-weight:800;color:#92400E;margin-bottom:4px;
+  text-transform:uppercase;letter-spacing:.5px
+}
+.tricky-banner-chips{display:flex;gap:8px;flex-wrap:wrap}
+.tricky-banner-chip{
+  background:#FEF08A;color:#78350F;border-radius:10px;
+  padding:5px 14px;font-weight:900;font-size:18px;border:2px solid #FDE047
+}
+
+/* Teaching notes */
+.teaching-notes{
+  margin-top:16px;background:#EFF6FF;border-radius:16px;
+  padding:14px 20px;border:2px solid #BFDBFE
+}
+.teaching-notes-label{
+  font-size:12px;font-weight:800;color:#1E40AF;margin-bottom:8px;
+  text-transform:uppercase;letter-spacing:.5px
+}
+.teaching-notes ul{padding-left:18px;color:#1D4ED8;font-size:13px;line-height:1.8;font-weight:600}
+
+/* Review week */
+.review-view{
+  border-radius:20px;padding:24px;text-align:center;
+  border-style:dashed;border-width:2px
+}
+.review-icon{font-size:48px;margin-bottom:12px}
+.review-title{font-size:22px;font-weight:900;margin-bottom:8px}
+.review-desc{font-size:15px;color:#475569;max-width:500px;margin:0 auto 16px;line-height:1.6}
+.review-sounds{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:8px}
+.review-sound-chip{
+  color:white;border-radius:10px;padding:6px 14px;font-weight:900;font-size:16px
+}
+.review-tricky{margin-top:16px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.review-tricky-chip{
+  background:#FEF08A;color:#78350F;border-radius:8px;
+  padding:4px 10px;font-weight:900;font-size:14px;border:2px solid #FDE047
+}
+</style>
+</head>
+<body>
+<div id="shell">
+  <div id="topbar">
+    <div class="topbar-left">
+      <span class="topbar-logo">🎓</span>
+      <div>
+        <div class="topbar-name">Jolly Phonics</div>
+        <div class="topbar-sub">Teacher Dashboard — 36 Week Timetable</div>
+      </div>
+      <a href="index.html" class="topbar-back">← Daily Planner</a>
+    </div>
+    <div class="toggle-wrap">
+      <button class="toggle-btn active" data-mode="teaching" id="toggleTeaching">👩‍🏫 Teaching</button>
+      <button class="toggle-btn" data-mode="student" id="toggleStudent">📚 Student</button>
+    </div>
+  </div>
+  <div id="body">
+    <div id="sidebar">
+      <div class="sidebar-hdr">Week Picker</div>
+      <div id="termList"></div>
+    </div>
+    <div id="weekView"></div>
+  </div>
+</div>
+
+<script src="jp-data.js"></script>
+<script>
+const D = window.JP;
+const STORAGE_KEY = 'jp_dash_v2';
+
+let state = {
+  selectedWeek: 1,
+  mode: 'teaching',
+  expanded: {1: true, 2: true, 3: true}
+};
+
+function loadState() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+    if (saved.selectedWeek) state.selectedWeek = saved.selectedWeek;
+  } catch {}
+}
+
+function saveState() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify({selectedWeek: state.selectedWeek})); } catch {}
+}
+
+function termOf(weekData) {
+  return D.terms.find(t => t.id === weekData.term);
+}
+
+function displaySound(s) {
+  return s === 'oo2' ? 'oo' : s === 'th2' ? 'th' : s;
+}
+
+function esc(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+/* ── Sidebar ─────────────────────────────────────────────── */
+function renderSidebar() {
+  const list = document.getElementById('termList');
+  list.innerHTML = D.terms.map(term => {
+    const termWeeks = D.weeks.filter(w => w.term === term.id);
+    const isOpen = state.expanded[term.id];
+    return `
+      <div class="term-section">
+        <button class="term-btn" data-term="${term.id}"
+          style="background:${term.bg};border-left-color:${term.accent}">
+          <div>
+            <div class="term-btn-name" style="color:${term.accent}">${esc(term.name)}</div>
+            <div class="term-btn-sub">${esc(term.sub)}</div>
+          </div>
+          <span class="term-chevron" style="color:${term.accent}">${isOpen ? '▴' : '▾'}</span>
+        </button>
+        ${isOpen ? termWeeks.map(w => {
+          const sel = w.week === state.selectedWeek;
+          return `<button class="week-btn" data-week="${w.week}"
+            style="background:${sel ? term.badge : 'transparent'};border-right-color:${sel ? term.accent : 'transparent'}">
+            <div>
+              <span class="week-btn-num" style="font-weight:${sel?900:700};color:${sel?term.accent:'#475569'}">Wk ${w.week}</span>
+              <span class="week-btn-theme">${esc(w.theme)}</span>
+            </div>
+          </button>`;
+        }).join('') : ''}
+      </div>`;
+  }).join('');
+}
+
+/* ── Day Card ─────────────────────────────────────────────── */
+function renderDayCard(dayIdx, sound, weekData) {
+  const term = termOf(weekData);
+  const ds = displaySound(sound);
+  const info = D.sounds[sound] || {e:'❓', a:'Review this sound', w:['blend','read','spell','write']};
+  const tricky = dayIdx === 0 && weekData.trickyWords && weekData.trickyWords.length > 0
+    ? weekData.trickyWords : null;
+  const dayName = D.days[dayIdx];
+  const badgeFontSize = ds.length > 2 ? 32 : 48;
+
+  const actionHtml = state.mode === 'teaching' ? `
+    <div class="action-box" style="border-left-color:${term.accent}">
+      <div class="action-label" style="color:${term.accent}">Action</div>
+      <div class="action-body">${esc(info.a)}</div>
+    </div>` : '';
+
+  const blendLabel = state.mode === 'teaching' ? 'Blending Practice' : 'Read these words';
+
+  const wordChips = info.w.map(w =>
+    `<span class="word-chip" style="background:${term.badge};color:${term.accent}">${esc(w)}</span>`
+  ).join('');
+
+  const trickyHtml = tricky ? `
+    <div class="tricky-card-section">
+      <div class="tricky-card-label">Tricky Word${tricky.length > 1 ? 's' : ''} of the Week</div>
+      <div class="tricky-card-chips">
+        ${tricky.map(tw => `<span class="tricky-chip">⭐ ${esc(tw)}</span>`).join('')}
+      </div>
+    </div>` : '';
+
+  return `
+    <div class="day-card">
+      <div class="day-card-hdr" style="background:${term.accent}">
+        <span>${esc(dayName)}</span>
+      </div>
+      <div class="day-card-body">
+        <div class="sound-row">
+          <div class="sound-badge" style="background:${term.badge};color:${term.accent};font-size:${badgeFontSize}px">
+            ${esc(ds)}
+          </div>
+          <div class="sound-emoji">${info.e}</div>
+        </div>
+        ${actionHtml}
+        <div>
+          <div class="blend-label">${blendLabel}</div>
+          <div class="word-chips">${wordChips}</div>
+        </div>
+        ${trickyHtml}
+      </div>
+    </div>`;
+}
+
+/* ── Review Week View ────────────────────────────────────── */
+function renderReviewWeek(weekData) {
+  const term = termOf(weekData);
+  const soundChips = weekData.sounds.map(s =>
+    `<span class="review-sound-chip" style="background:${term.accent}">${esc(displaySound(s))}</span>`
+  ).join('');
+  const trickyChips = weekData.trickyWords && weekData.trickyWords.length > 0
+    ? `<div class="review-tricky">${weekData.trickyWords.map(tw =>
+        `<span class="review-tricky-chip">⭐ ${esc(tw)}</span>`).join('')}</div>` : '';
+
+  return `
+    <div class="review-view" style="background:${term.badge};border-color:${term.accent}">
+      <div class="review-icon">🔄</div>
+      <h3 class="review-title" style="color:${term.accent}">Consolidation &amp; Review Week</h3>
+      <p class="review-desc">${esc(weekData.reviewNote || '')}</p>
+      <div class="review-sounds">${soundChips}</div>
+      ${trickyChips}
+    </div>`;
+}
+
+/* ── Week View ───────────────────────────────────────────── */
+function renderWeekView() {
+  const weekData = D.weeks.find(w => w.week === state.selectedWeek);
+  if (!weekData) return;
+  const term = termOf(weekData);
+
+  const capitalsPill = weekData.capitals
+    ? `<span class="badge-sm" style="background:#EDE9FE;color:#6D28D9">Capitals</span>` : '';
+  const reviewPill = weekData.review
+    ? `<span class="badge-sm" style="background:#FEE2E2;color:#DC2626">Review</span>` : '';
+
+  const dayCards = weekData.review
+    ? renderReviewWeek(weekData)
+    : `<div class="day-grid">${
+        weekData.sounds.slice(0, 5).map((s, i) => renderDayCard(i, s, weekData)).join('')
+      }</div>`;
+
+  const trickyBanner = !weekData.review && weekData.trickyWords && weekData.trickyWords.length > 0 ? `
+    <div class="tricky-banner">
+      <span class="tricky-banner-star">⭐</span>
+      <div>
+        <div class="tricky-banner-label">Tricky Word${weekData.trickyWords.length > 1 ? 's' : ''} this week</div>
+        <div class="tricky-banner-chips">
+          ${weekData.trickyWords.map(tw => `<span class="tricky-banner-chip">${esc(tw)}</span>`).join('')}
+        </div>
+      </div>
+    </div>` : '';
+
+  const teachingNotes = state.mode === 'teaching' && !weekData.review ? `
+    <div class="teaching-notes">
+      <div class="teaching-notes-label">📋 Teaching Notes</div>
+      <ul>
+        <li>Introduce new sound with the Jolly Phonics action and story</li>
+        <li>Use flash cards &amp; sound books to review previous sounds</li>
+        <li>Multisensory practice: air writing, pencil hold, finger tracing</li>
+        <li>Blending practice: adult says sounds, students blend into word</li>
+        <li>Dictation: call out words, students segment and write</li>
+      </ul>
+    </div>` : '';
+
+  document.getElementById('weekView').innerHTML = `
+    <div class="week-hdr" style="border:2px solid ${term.badge}">
+      <div>
+        <div class="week-hdr-badges">
+          <span class="badge" style="background:${term.accent};color:white">Week ${weekData.week}</span>
+          <span class="badge-sm" style="background:${term.badge};color:${term.accent}">${esc(term.name)}</span>
+          ${capitalsPill}${reviewPill}
+        </div>
+        <h2 class="week-hdr-title">${esc(weekData.theme)}</h2>
+      </div>
+    </div>
+    ${dayCards}
+    ${trickyBanner}
+    ${teachingNotes}
+  `;
+}
+
+/* ── Render all ─────────────────────────────────────────── */
+function renderAll() {
+  renderSidebar();
+  renderWeekView();
+  // Sync toggle buttons
+  document.querySelectorAll('.toggle-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.mode === state.mode);
+  });
+}
+
+/* ── Events ─────────────────────────────────────────────── */
+document.getElementById('termList').addEventListener('click', e => {
+  const termBtn = e.target.closest('[data-term]');
+  const weekBtn = e.target.closest('[data-week]');
+  if (termBtn) {
+    const id = Number(termBtn.dataset.term);
+    state.expanded[id] = !state.expanded[id];
+    renderSidebar();
+  } else if (weekBtn) {
+    state.selectedWeek = Number(weekBtn.dataset.week);
+    saveState();
+    renderAll();
+  }
+});
+
+document.querySelector('.toggle-wrap').addEventListener('click', e => {
+  const btn = e.target.closest('.toggle-btn');
+  if (btn) {
+    state.mode = btn.dataset.mode;
+    renderAll();
+  }
+});
+
+/* ── Init ────────────────────────────────────────────────── */
+loadState();
+renderAll();
+</script>
+</body>
+</html>

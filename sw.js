@@ -1,4 +1,4 @@
-const CACHE = 'ella-phonics-v2';
+const CACHE = 'ella-phonics-v3';
 const ASSETS = [
   './',
   './index.html',
@@ -6,6 +6,8 @@ const ASSETS = [
   './app.js',
   './curriculum.js',
   './worksheets.js',
+  './dashboard.html',
+  './jp-data.js',
   './manifest.json',
   './icons/icon.svg',
   './worksheets/01-intro.jpg',
