@@ -9,6 +9,7 @@ const ASSETS = [
   './jp-data.js',
   './manifest.json',
   './icons/icon.svg',
+  './icons/icon-180.png',
   './worksheets/01-intro.jpg',
   './worksheets/02-y-holly.jpg',
   './worksheets/03-ae.jpg',
