@@ -99,6 +99,41 @@ Built and visually tested all core files:
 
 ---
 
+### Session 2 — 2026-04-24
+**Status: Worksheet library added ✓**
+
+Added worksheet library feature:
+- `worksheets/` folder — 19 processed JPEG images (14 rotated 180° from upside-down originals)
+- `worksheets.js` — catalog of all 19 worksheets with title and description
+- `index.html` — already had library view + lightbox HTML structure added
+- `style.css` — added library grid, card, and lightbox styles
+- `app.js` — library view, grid rendering, and lightbox logic already wired up
+- `sw.js` bumped to v2 — all 19 images now cached for offline use
+
+**Worksheet content:**
+- Alternative spellings intro page
+- Magic-e worksheets: a_e, e_e, i_e, o_e, u_e
+- Alternative digraph worksheets: ay, ea, y(fly), igh, ow(snow), ow(owl), ir, ur
+- Word strip cut-out sheets (3 sets)
+- Alternative spellings full reference chart
+
+**How the library works:**
+- Tap the 📚 book icon in the app header
+- All 19 worksheets shown as a 2-column thumbnail grid
+- Tap any thumbnail to open it full-screen in a lightbox
+- Tap × or outside the image to close
+- All images cached offline via service worker
+
+**Pushed to GitHub ✓** — live at https://wongsuann1991-droid.github.io/ellaphonics/
+
+**Next steps for next session:**
+- [ ] Consider adding a "Done today ✓" button with a date stamp
+- [ ] Consider a notes field per lesson
+- [ ] Test offline behaviour on phone with WiFi off
+- [ ] Note: there are additional untracked files in `worksheets/` and a `Timetable/` folder — clarify with Su Ann what these are for
+
+---
+
 ## Possible future features (not yet built)
 - "Done today" button to mark a lesson as completed (with a date stamp)
 - Notes field per lesson (e.g. "Ella struggled with 'snail'")
