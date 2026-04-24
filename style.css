@@ -363,3 +363,129 @@ body {
   font-weight: 600;
   cursor: pointer;
 }
+
+/* ── WORKSHEET LIBRARY VIEW ───────────────────────────── */
+.lib-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px 8px;
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 10;
+}
+
+.lib-back-btn {
+  color: var(--purple);
+  font-size: 1.1rem;
+  font-weight: 700;
+  padding: 6px 10px;
+  border-radius: 8px;
+}
+
+.lib-back-btn:hover { background: var(--purple-light); }
+
+.lib-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.lib-subtitle {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  padding: 0 16px 12px;
+}
+
+.worksheet-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 0 16px 32px;
+}
+
+.ws-card {
+  background: var(--card-bg);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.12s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ws-card:active { transform: scale(0.97); }
+
+.ws-thumb {
+  width: 100%;
+  aspect-ratio: 3/4;
+  object-fit: cover;
+  object-position: top;
+  display: block;
+  background: #f0eef8;
+}
+
+.ws-info {
+  padding: 8px 10px 10px;
+}
+
+.ws-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--purple);
+  line-height: 1.3;
+  margin-bottom: 2px;
+}
+
+.ws-desc {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* ── LIGHTBOX ─────────────────────────────────────────── */
+.lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.92);
+  z-index: 500;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  overflow-y: auto;
+  padding: 16px;
+}
+
+.lightbox-close {
+  position: fixed;
+  top: 12px;
+  right: 16px;
+  background: rgba(255,255,255,0.15);
+  border: none;
+  color: #fff;
+  font-size: 2rem;
+  line-height: 1;
+  padding: 4px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  z-index: 501;
+}
+
+.lightbox-label {
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: center;
+  margin: 48px 0 12px;
+  padding: 0 40px;
+  line-height: 1.4;
+}
+
+.lightbox-img {
+  width: 100%;
+  max-width: 700px;
+  border-radius: 10px;
+  display: block;
+}

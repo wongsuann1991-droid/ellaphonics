@@ -21,6 +21,7 @@
       <span class="app-title">Ella Phonics</span>
     </div>
     <div class="header-right">
+      <button class="icon-btn" id="worksheetLibBtn" aria-label="Worksheet library" title="Worksheet Library">&#128218;</button>
       <button class="icon-btn" id="menuBtn" aria-label="Open menu">&#9776;</button>
     </div>
   </header>
@@ -106,8 +107,26 @@
     </div>
   </aside>
 
+  <!-- ── WORKSHEET LIBRARY VIEW ───────────────────────── -->
+  <main id="worksheetLibView" class="view">
+    <div class="lib-header">
+      <button class="icon-btn lib-back-btn" id="libBackBtn" aria-label="Back to lesson">&#8592; Back</button>
+      <span class="lib-title">Worksheet Library</span>
+    </div>
+    <p class="lib-subtitle">Tap any worksheet to open it full screen.</p>
+    <div class="worksheet-grid" id="worksheetGrid"></div>
+  </main>
+
+  <!-- ── WORKSHEET LIGHTBOX ────────────────────────────── -->
+  <div id="lightboxOverlay" class="lightbox-overlay hidden">
+    <button class="lightbox-close" id="lightboxClose" aria-label="Close">&times;</button>
+    <div class="lightbox-label" id="lightboxLabel"></div>
+    <img class="lightbox-img" id="lightboxImg" src="" alt="Worksheet" />
+  </div>
+
   <!-- ── SCRIPTS ────────────────────────────────────────── -->
   <script src="curriculum.js"></script>
+  <script src="worksheets.js"></script>
   <script src="app.js"></script>
   <script>
     // Register service worker

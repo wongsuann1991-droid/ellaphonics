@@ -253,6 +253,55 @@ document.getElementById('resetBtn').addEventListener('click', () => {
   }
 });
 
+// ── WORKSHEET LIBRARY ─────────────────────────────────────────
+const lessonView       = document.getElementById('lessonView');
+const worksheetLibView = document.getElementById('worksheetLibView');
+const lightboxOverlay  = document.getElementById('lightboxOverlay');
+const lightboxImg      = document.getElementById('lightboxImg');
+const lightboxLabel    = document.getElementById('lightboxLabel');
+
+function showLibrary() {
+  lessonView.classList.remove('active');
+  worksheetLibView.classList.add('active');
+  renderWorksheetGrid();
+}
+
+function hideLibrary() {
+  worksheetLibView.classList.remove('active');
+  lessonView.classList.add('active');
+}
+
+function renderWorksheetGrid() {
+  const grid = document.getElementById('worksheetGrid');
+  if (grid.childElementCount > 0) return; // already rendered
+  WORKSHEETS.forEach(ws => {
+    const card = document.createElement('div');
+    card.className = 'ws-card';
+    card.innerHTML =
+      `<img class="ws-thumb" src="${ws.file}" alt="${ws.title}" loading="lazy" />` +
+      `<div class="ws-info"><div class="ws-title">${ws.title}</div><div class="ws-desc">${ws.desc}</div></div>`;
+    card.addEventListener('click', () => openLightbox(ws));
+    grid.appendChild(card);
+  });
+}
+
+function openLightbox(ws) {
+  lightboxImg.src = ws.file;
+  lightboxLabel.textContent = ws.title;
+  lightboxOverlay.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  lightboxOverlay.classList.add('hidden');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('worksheetLibBtn').addEventListener('click', showLibrary);
+document.getElementById('libBackBtn').addEventListener('click', hideLibrary);
+document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+lightboxOverlay.addEventListener('click', e => { if (e.target === lightboxOverlay) closeLightbox(); });
+
 // ── INIT ──────────────────────────────────────────────────────
 (function init() {
   populateDayPicker();
