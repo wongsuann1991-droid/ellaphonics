@@ -1,9 +1,9 @@
-const CACHE = 'frankel-phonics-v1';
+const CACHE = 'frankel-phonics-v2';
 const ASSETS = [
   './',
-  './splash.html',
-  './dashboard.html',
   './index.html',
+  './dashboard.html',
+  './planner.html',
   './curriculum.js',
   './worksheets.js',
   './jp-data.js',

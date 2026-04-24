@@ -2,7 +2,7 @@
   "name": "Frankel Phonics",
   "short_name": "Frankel Phonics",
   "description": "Daily Jolly Phonics lesson planner",
-  "start_url": "./splash.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#f5f0e4",
   "theme_color": "#ece5d0",

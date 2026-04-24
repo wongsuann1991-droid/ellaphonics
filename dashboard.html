@@ -430,7 +430,7 @@ html, body {
       <button class="mode-btn" data-mode="student">Student</button>
     </div>
     <div class="tb-spacer"></div>
-    <a class="tb-back" href="index.html">&#8592; Daily Planner</a>
+    <a class="tb-back" href="planner.html">&#8592; Daily Planner</a>
   </div>
 
   <div id="scrollArea"></div>
@@ -605,7 +605,7 @@ function attachEvents() {
       const day = Number(el.dataset.day);
       localStorage.setItem(DAY_KEY, String(day));
       save();
-      window.location.href = 'index.html';
+      window.location.href = 'planner.html';
     });
   });
 
