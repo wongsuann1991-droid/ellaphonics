@@ -1,12 +1,11 @@
-const CACHE = 'ella-phonics-v3';
+const CACHE = 'frankel-phonics-v1';
 const ASSETS = [
   './',
+  './splash.html',
+  './dashboard.html',
   './index.html',
-  './style.css',
-  './app.js',
   './curriculum.js',
   './worksheets.js',
-  './dashboard.html',
   './jp-data.js',
   './manifest.json',
   './icons/icon.svg',

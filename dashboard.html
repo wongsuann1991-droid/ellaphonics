@@ -3,443 +3,654 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jolly Phonics Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<title>Frankel Phonics — Dashboard</title>
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Nunito',system-ui,sans-serif;background:#F8FAFC;color:#1E293B;height:100vh;overflow:hidden}
-button{font-family:inherit;cursor:pointer;border:none}
-::-webkit-scrollbar{width:6px}
-::-webkit-scrollbar-track{background:#F1F5F9}
-::-webkit-scrollbar-thumb{background:#CBD5E1;border-radius:3px}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ── Shell ─────────────────────────────────────────────── */
-#shell{display:flex;flex-direction:column;height:100vh;overflow:hidden}
-
-/* ── Top Bar ────────────────────────────────────────────── */
-#topbar{
-  display:flex;justify-content:space-between;align-items:center;
-  background:white;border-bottom:2px solid #E2E8F0;
-  padding:12px 24px;flex-shrink:0
-}
-.topbar-left{display:flex;align-items:center;gap:14px}
-.topbar-logo{font-size:28px;line-height:1}
-.topbar-name{font-size:18px;font-weight:900;color:#1E293B;line-height:1}
-.topbar-sub{font-size:12px;font-weight:700;color:#94A3B8}
-.topbar-back{font-size:12px;font-weight:700;color:#94A3B8;text-decoration:none;
-  background:#F1F5F9;border-radius:10px;padding:6px 12px;margin-left:8px;display:inline-block}
-.topbar-back:hover{background:#E2E8F0}
-
-/* ── Toggle ─────────────────────────────────────────────── */
-.toggle-wrap{display:flex;background:#F1F5F9;border-radius:12px;padding:3px;gap:2px}
-.toggle-btn{
-  padding:7px 16px;border-radius:10px;font-weight:800;font-size:13px;
-  background:transparent;color:#94A3B8;box-shadow:none;transition:all .15s
-}
-.toggle-btn.active{background:white;color:#1E293B;box-shadow:0 1px 4px rgba(0,0,0,.12)}
-
-/* ── Body row ───────────────────────────────────────────── */
-#body{display:flex;flex:1;overflow:hidden}
-
-/* ── Sidebar ─────────────────────────────────────────────── */
-#sidebar{
-  width:220px;flex-shrink:0;background:white;
-  border-right:2px solid #E2E8F0;display:flex;flex-direction:column;overflow:hidden
-}
-.sidebar-hdr{
-  padding:16px 16px 12px;border-bottom:2px solid #E2E8F0;
-  font-size:11px;font-weight:800;color:#94A3B8;letter-spacing:1px;text-transform:uppercase
-}
-#termList{overflow:auto;flex:1;padding:8px 0}
-.term-section{margin-bottom:4px}
-.term-btn{
-  width:100%;text-align:left;padding:10px 14px;
-  display:flex;justify-content:space-between;align-items:center;
-  border-left-width:4px;border-left-style:solid
-}
-.term-btn-name{font-weight:900;font-size:12px;line-height:1.2}
-.term-btn-sub{font-weight:600;font-size:10px;color:#94A3B8;margin-top:1px}
-.term-chevron{font-size:14px}
-.week-btn{
-  width:100%;text-align:left;padding:8px 14px 8px 20px;
-  background:transparent;
-  border-right:3px solid transparent;
-  display:flex;align-items:center;justify-content:space-between;
-  transition:background .15s
-}
-.week-btn-num{font-weight:700;font-size:13px;color:#475569;display:block;line-height:1.2}
-.week-btn-theme{
-  font-weight:600;font-size:10px;color:#94A3B8;display:block;margin-top:1px;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px
+:root {
+  --p0:      #faf6ed;
+  --p1:      #f5f0e4;
+  --p2:      #ece5d0;
+  --p3:      #ddd4be;
+  --p4:      #c8bc9e;
+  --ink:     #26200f;
+  --ink-2:   #4a3c22;
+  --ink-3:   #7a6840;
+  --ink-4:   #a8956a;
+  --ink-5:   #c8b080;
+  --cur-bg:  #ede4cc;
+  --done-op: 0.42;
 }
 
-/* ── Week View ───────────────────────────────────────────── */
-#weekView{flex:1;overflow:auto;padding:20px 24px}
-
-/* Week header card */
-.week-hdr{
-  background:white;border-radius:20px;padding:18px 24px;margin-bottom:20px;
-  display:flex;justify-content:space-between;align-items:center;
-  box-shadow:0 2px 8px rgba(0,0,0,.06)
-}
-.week-hdr-badges{display:flex;align-items:center;gap:10px;margin-bottom:4px;flex-wrap:wrap}
-.badge{border-radius:10px;padding:3px 12px;font-size:12px;font-weight:800}
-.badge-sm{border-radius:10px;padding:3px 10px;font-size:11px;font-weight:700}
-.week-hdr-title{font-size:22px;font-weight:900;color:#1E293B}
-
-/* Day grid */
-.day-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
-
-/* Day card */
-.day-card{
-  background:white;border-radius:20px;border:2px solid #E2E8F0;
-  overflow:hidden;display:flex;flex-direction:column;
-  box-shadow:0 2px 8px rgba(0,0,0,.06)
-}
-.day-card-hdr{padding:8px 14px}
-.day-card-hdr span{font-weight:800;font-size:13px;color:white}
-.day-card-body{padding:14px 16px;flex:1;display:flex;flex-direction:column;gap:10px}
-
-/* Sound badge row */
-.sound-row{display:flex;align-items:center;gap:12px}
-.sound-badge{
-  border-radius:14px;width:72px;height:72px;flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;
-  font-weight:900;line-height:1
-}
-.sound-emoji{font-size:32px}
-
-/* Action section */
-.action-box{
-  background:#F8FAFC;border-radius:12px;padding:8px 12px;
-  border-left-width:3px;border-left-style:solid
-}
-.action-label{
-  font-weight:800;font-size:11px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px
-}
-.action-body{font-size:12px;font-weight:600;color:#475569}
-
-/* Blending section */
-.blend-label{
-  font-size:11px;font-weight:800;color:#94A3B8;text-transform:uppercase;
-  letter-spacing:.5px;margin-bottom:6px
-}
-.word-chips{display:flex;flex-wrap:wrap;gap:5px}
-.word-chip{border-radius:10px;padding:4px 10px;font-size:14px;font-weight:800}
-
-/* Tricky word (Monday card) */
-.tricky-card-section{margin-top:auto}
-.tricky-card-label{
-  font-size:11px;font-weight:800;color:#94A3B8;text-transform:uppercase;
-  letter-spacing:.5px;margin-bottom:5px
-}
-.tricky-card-chips{display:flex;gap:6px;flex-wrap:wrap}
-.tricky-chip{
-  background:#FEF08A;color:#78350F;border-radius:10px;
-  padding:5px 12px;font-weight:900;font-size:16px;border:2px solid #FDE047
+html, body {
+  height: 100%; width: 100%;
+  background: var(--p1);
+  color: var(--ink);
+  font-family: 'Lora', serif;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
 }
 
-/* Tricky words banner */
-.tricky-banner{
-  margin-top:16px;background:#FFFBEB;border-radius:16px;
-  padding:14px 20px;border:2px solid #FDE68A;
-  display:flex;align-items:center;gap:12px
-}
-.tricky-banner-star{font-size:22px}
-.tricky-banner-label{
-  font-size:12px;font-weight:800;color:#92400E;margin-bottom:4px;
-  text-transform:uppercase;letter-spacing:.5px
-}
-.tricky-banner-chips{display:flex;gap:8px;flex-wrap:wrap}
-.tricky-banner-chip{
-  background:#FEF08A;color:#78350F;border-radius:10px;
-  padding:5px 14px;font-weight:900;font-size:18px;border:2px solid #FDE047
+/* ── Shell ──────────────────────────────────────────────── */
+#shell { display: flex; flex-direction: column; height: 100vh; }
+
+/* ── Top bar ────────────────────────────────────────────── */
+#topbar {
+  flex-shrink: 0;
+  background: var(--p2);
+  border-bottom: 1.5px solid var(--p4);
+  padding: 0 28px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
 }
 
-/* Teaching notes */
-.teaching-notes{
-  margin-top:16px;background:#EFF6FF;border-radius:16px;
-  padding:14px 20px;border:2px solid #BFDBFE
-}
-.teaching-notes-label{
-  font-size:12px;font-weight:800;color:#1E40AF;margin-bottom:8px;
-  text-transform:uppercase;letter-spacing:.5px
-}
-.teaching-notes ul{padding-left:18px;color:#1D4ED8;font-size:13px;line-height:1.8;font-weight:600}
+.tb-wordmark { display: flex; flex-direction: column; gap: 1px; }
 
-/* Review week */
-.review-view{
-  border-radius:20px;padding:24px;text-align:center;
-  border-style:dashed;border-width:2px
+.tb-name {
+  font-family: 'IM Fell English', serif;
+  font-size: 18px;
+  color: var(--ink);
+  line-height: 1;
 }
-.review-icon{font-size:48px;margin-bottom:12px}
-.review-title{font-size:22px;font-weight:900;margin-bottom:8px}
-.review-desc{font-size:15px;color:#475569;max-width:500px;margin:0 auto 16px;line-height:1.6}
-.review-sounds{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:8px}
-.review-sound-chip{
-  color:white;border-radius:10px;padding:6px 14px;font-weight:900;font-size:16px
+
+.tb-sub {
+  font-family: 'Lora', serif;
+  font-size: 9.5px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--ink-3);
 }
-.review-tricky{margin-top:16px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
-.review-tricky-chip{
-  background:#FEF08A;color:#78350F;border-radius:8px;
-  padding:4px 10px;font-weight:900;font-size:14px;border:2px solid #FDE047
+
+.tb-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--p4);
+  flex-shrink: 0;
 }
+
+.tb-spacer { flex: 1; }
+
+.mode-toggle {
+  display: flex;
+  border: 1px solid var(--p4);
+}
+
+.mode-btn {
+  padding: 6px 18px;
+  background: transparent;
+  color: var(--ink-3);
+  border: none;
+  cursor: pointer;
+  font-family: 'Lora', serif;
+  font-size: 12px;
+  transition: background 0.2s, color 0.2s;
+}
+.mode-btn.active { background: var(--ink); color: var(--p1); }
+.mode-btn + .mode-btn { border-left: 1px solid var(--p4); }
+
+.tb-back {
+  font-family: 'Lora', serif;
+  font-size: 11px;
+  color: var(--ink-3);
+  text-decoration: none;
+  letter-spacing: 0.05em;
+  padding: 5px 12px;
+  border: 1px solid var(--p4);
+  transition: border-color 0.2s, color 0.2s;
+  white-space: nowrap;
+}
+.tb-back:hover { border-color: var(--ink-2); color: var(--ink); }
+
+
+/* ── Scroll area ────────────────────────────────────────── */
+#scrollArea {
+  flex: 1;
+  overflow-y: auto;
+  padding: 28px 28px 60px;
+  scroll-behavior: smooth;
+}
+#scrollArea::-webkit-scrollbar { width: 4px; }
+#scrollArea::-webkit-scrollbar-thumb { background: var(--p4); }
+
+/* ── Term section ───────────────────────────────────────── */
+.term-section { margin-bottom: 40px; }
+
+.term-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.term-title {
+  font-family: 'IM Fell English', serif;
+  font-size: 20px;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.term-sub {
+  font-family: 'Lora', serif;
+  font-style: italic;
+  font-size: 12px;
+  color: var(--ink-3);
+}
+
+.term-rule {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, var(--p4), transparent);
+}
+
+/* ── Week row ───────────────────────────────────────────── */
+.week-row {
+  margin-bottom: 10px;
+  border: 1px solid var(--p3);
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.week-row:hover { border-color: var(--p4); }
+.week-row.current { border-color: var(--ink-2); }
+.week-row.review-week { border-style: dashed; }
+
+@keyframes rowIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.week-row { animation: rowIn 0.35s ease both; }
+
+/* ── Week meta bar ──────────────────────────────────────── */
+.week-meta {
+  display: flex;
+  align-items: center;
+  padding: 9px 16px;
+  gap: 12px;
+  background: var(--p2);
+  border-bottom: 1px solid var(--p3);
+  cursor: pointer;
+  user-select: none;
+}
+.week-row.current .week-meta { background: var(--cur-bg); }
+
+.week-num {
+  font-family: 'IM Fell English', serif;
+  font-size: 14px;
+  color: var(--ink);
+  min-width: 50px;
+}
+
+.week-theme {
+  font-family: 'Lora', serif;
+  font-style: italic;
+  font-size: 12px;
+  color: var(--ink-3);
+  flex: 1;
+}
+
+.week-tricky {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.wt-label {
+  font-family: 'Lora', serif;
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  color: var(--ink-5);
+}
+
+.tricky-chip {
+  font-family: 'IM Fell English', serif;
+  font-size: 13px;
+  color: var(--ink-2);
+  border: 1px solid var(--p4);
+  padding: 1px 8px;
+  background: var(--p1);
+}
+
+.week-badge {
+  font-family: 'Lora', serif;
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  border: 1px solid var(--p4);
+  padding: 2px 7px;
+}
+
+.week-current-badge {
+  font-family: 'Lora', serif;
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+  color: var(--p1);
+  background: var(--ink-2);
+  padding: 2px 8px;
+}
+
+.week-chevron {
+  font-size: 11px;
+  color: var(--ink-4);
+  transition: transform 0.25s;
+  margin-left: 8px;
+  flex-shrink: 0;
+}
+.week-row.open .week-chevron { transform: rotate(180deg); }
+
+/* ── Day grid ───────────────────────────────────────────── */
+.day-grid {
+  display: none;
+  grid-template-columns: repeat(5, 1fr);
+  border-top: 1px solid var(--p3);
+}
+.week-row.open .day-grid { display: grid; }
+
+/* ── Review body ────────────────────────────────────────── */
+.review-body {
+  display: none;
+  padding: 16px 20px;
+  border-top: 1px solid var(--p3);
+  background: var(--p1);
+}
+.week-row.open .review-body { display: block; }
+
+.review-text {
+  font-family: 'Lora', serif;
+  font-style: italic;
+  font-size: 13px;
+  color: var(--ink-2);
+  line-height: 1.8;
+  max-width: 600px;
+}
+
+.review-sounds {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.review-sound {
+  font-family: 'IM Fell English', serif;
+  font-size: 18px;
+  color: var(--ink-2);
+  border: 1px solid var(--p4);
+  padding: 3px 10px;
+  background: var(--p1);
+}
+
+/* ── Day cell ───────────────────────────────────────────── */
+.day-cell {
+  padding: 12px 10px 14px;
+  border-right: 1px solid var(--p3);
+  background: var(--p1);
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.day-cell:last-child { border-right: none; }
+.day-cell:hover { background: var(--p2); }
+.day-cell.done-cell { opacity: var(--done-op); }
+.day-cell.current-cell { background: var(--cur-bg); }
+.day-cell.current-cell:hover { background: #e4d9be; }
+
+.dc-label {
+  font-family: 'Lora', serif;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-5);
+}
+
+.dc-sound {
+  font-family: 'IM Fell English', serif;
+  font-size: 28px;
+  color: var(--ink);
+  line-height: 1;
+  min-height: 34px;
+  display: flex;
+  align-items: flex-end;
+}
+.dc-sound.long { font-size: 20px; }
+
+.dc-words {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dc-word {
+  font-family: 'Lora', serif;
+  font-size: 10px;
+  color: var(--ink-3);
+  line-height: 1.3;
+}
+
+.dc-done-tick {
+  position: absolute;
+  top: 10px; right: 10px;
+  font-family: 'Lora', serif;
+  font-size: 9px;
+  color: var(--ink-2);
+}
+
+.dc-current-dot {
+  position: absolute;
+  top: 10px; right: 10px;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--ink-2);
+}
+
+/* ── Teaching notes ─────────────────────────────────────── */
+.teaching-notes {
+  padding: 12px 16px;
+  border-top: 1px dashed var(--p4);
+  background: var(--p2);
+  display: none;
+}
+.week-row.open .teaching-notes.visible { display: block; }
+
+.tn-title {
+  font-family: 'Lora', serif;
+  font-size: 9.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 8px;
+}
+
+.tn-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tn-list li {
+  font-family: 'Lora', serif;
+  font-size: 12px;
+  color: var(--ink-2);
+  line-height: 1.6;
+  padding-left: 14px;
+  position: relative;
+}
+.tn-list li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: var(--ink-5);
+}
+
+/* ── Tooltip ────────────────────────────────────────────── */
+.day-tooltip {
+  position: fixed;
+  z-index: 200;
+  background: var(--ink);
+  color: var(--p1);
+  font-family: 'Lora', serif;
+  font-size: 12px;
+  padding: 8px 14px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+  max-width: 200px;
+  line-height: 1.6;
+}
+.day-tooltip.show { opacity: 1; }
+
+.tt-sound {
+  font-family: 'IM Fell English', serif;
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+.tt-action { font-size: 11px; opacity: 0.8; line-height: 1.5; }
+.tt-words  { font-size: 10px; opacity: 0.6; margin-top: 3px; }
 </style>
 </head>
 <body>
 <div id="shell">
+
   <div id="topbar">
-    <div class="topbar-left">
-      <span class="topbar-logo">🎓</span>
-      <div>
-        <div class="topbar-name">Jolly Phonics</div>
-        <div class="topbar-sub">Teacher Dashboard — 36 Week Timetable</div>
-      </div>
-      <a href="index.html" class="topbar-back">← Daily Planner</a>
+    <div class="tb-wordmark">
+      <div class="tb-name">Frankel Phonics</div>
     </div>
-    <div class="toggle-wrap">
-      <button class="toggle-btn active" data-mode="teaching" id="toggleTeaching">👩‍🏫 Teaching</button>
-      <button class="toggle-btn" data-mode="student" id="toggleStudent">📚 Student</button>
+    <div class="tb-divider"></div>
+    <div class="mode-toggle">
+      <button class="mode-btn active" data-mode="teaching">Teaching</button>
+      <button class="mode-btn" data-mode="student">Student</button>
     </div>
+    <div class="tb-spacer"></div>
+    <a class="tb-back" href="index.html">&#8592; Daily Planner</a>
   </div>
-  <div id="body">
-    <div id="sidebar">
-      <div class="sidebar-hdr">Week Picker</div>
-      <div id="termList"></div>
-    </div>
-    <div id="weekView"></div>
-  </div>
+
+  <div id="scrollArea"></div>
 </div>
+
+<div class="day-tooltip" id="tooltip"></div>
 
 <script src="jp-data.js"></script>
 <script>
-const D = window.JP;
-const STORAGE_KEY = 'jp_dash_v2';
+const D           = window.JP;
+const STORAGE_KEY = 'gp_dash_v1';
+const DAY_KEY     = 'ella_phonics_day';
 
 let state = {
-  selectedWeek: 1,
   mode: 'teaching',
-  expanded: {1: true, 2: true, 3: true}
+  currentDay: parseInt(localStorage.getItem(DAY_KEY) || '1', 10),
+  open: {}
 };
 
-function loadState() {
+try {
+  const s = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+  if (s.mode) state.mode = s.mode;
+  if (s.open) state.open = s.open;
+} catch(e) {}
+
+function save() {
   try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
-    if (saved.selectedWeek) state.selectedWeek = saved.selectedWeek;
-  } catch {}
+    localStorage.setItem(STORAGE_KEY,
+      JSON.stringify({ mode: state.mode, open: state.open }));
+  } catch(e) {}
 }
 
-function saveState() {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify({selectedWeek: state.selectedWeek})); } catch {}
+function weekForDay(day) { return Math.ceil(day / 5); }
+const currentWeek = Math.max(1, Math.min(36, weekForDay(state.currentDay)));
+
+function ds(s) {
+  if (s === 'oo2') return 'oo';
+  if (s === 'th2') return 'th';
+  return s.replace(/\(.*/, '');
 }
 
-function termOf(weekData) {
-  return D.terms.find(t => t.id === weekData.term);
-}
+/* ── Render ─────────────────────────────────────────────── */
+function render() {
+  document.querySelectorAll('.mode-btn').forEach(b =>
+    b.classList.toggle('active', b.dataset.mode === state.mode));
 
-function displaySound(s) {
-  return s === 'oo2' ? 'oo' : s === 'th2' ? 'th' : s;
-}
+  const area = document.getElementById('scrollArea');
+  area.innerHTML = '';
 
-function esc(str) {
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
+  D.terms.forEach(term => {
+    const weeks = D.weeks.filter(w => w.term === term.id);
+    const section = document.createElement('div');
+    section.className = 'term-section';
+    section.innerHTML =
+      '<div class="term-header">' +
+        '<div class="term-title">' + term.name + '</div>' +
+        '<div class="term-sub">' + term.sub + '</div>' +
+        '<div class="term-rule"></div>' +
+      '</div>';
 
-/* ── Sidebar ─────────────────────────────────────────────── */
-function renderSidebar() {
-  const list = document.getElementById('termList');
-  list.innerHTML = D.terms.map(term => {
-    const termWeeks = D.weeks.filter(w => w.term === term.id);
-    const isOpen = state.expanded[term.id];
-    return `
-      <div class="term-section">
-        <button class="term-btn" data-term="${term.id}"
-          style="background:${term.bg};border-left-color:${term.accent}">
-          <div>
-            <div class="term-btn-name" style="color:${term.accent}">${esc(term.name)}</div>
-            <div class="term-btn-sub">${esc(term.sub)}</div>
-          </div>
-          <span class="term-chevron" style="color:${term.accent}">${isOpen ? '▴' : '▾'}</span>
-        </button>
-        ${isOpen ? termWeeks.map(w => {
-          const sel = w.week === state.selectedWeek;
-          return `<button class="week-btn" data-week="${w.week}"
-            style="background:${sel ? term.badge : 'transparent'};border-right-color:${sel ? term.accent : 'transparent'}">
-            <div>
-              <span class="week-btn-num" style="font-weight:${sel?900:700};color:${sel?term.accent:'#475569'}">Wk ${w.week}</span>
-              <span class="week-btn-theme">${esc(w.theme)}</span>
-            </div>
-          </button>`;
-        }).join('') : ''}
-      </div>`;
-  }).join('');
-}
+    weeks.forEach((week, wi) => {
+      const isCurrentWeek = week.week === currentWeek;
+      const isOpen        = state.open[week.week] ?? isCurrentWeek;
+      const isReview      = !!week.review;
+      const weekStartDay  = (week.week - 1) * 5 + 1;
 
-/* ── Day Card ─────────────────────────────────────────────── */
-function renderDayCard(dayIdx, sound, weekData) {
-  const term = termOf(weekData);
-  const ds = displaySound(sound);
-  const info = D.sounds[sound] || {e:'❓', a:'Review this sound', w:['blend','read','spell','write']};
-  const tricky = dayIdx === 0 && weekData.trickyWords && weekData.trickyWords.length > 0
-    ? weekData.trickyWords : null;
-  const dayName = D.days[dayIdx];
-  const badgeFontSize = ds.length > 2 ? 32 : 48;
+      const row = document.createElement('div');
+      row.className = ['week-row',
+        isCurrentWeek ? 'current'     : '',
+        isOpen        ? 'open'        : '',
+        isReview      ? 'review-week' : ''
+      ].filter(Boolean).join(' ');
+      row.style.animationDelay = (wi * 0.04) + 's';
 
-  const actionHtml = state.mode === 'teaching' ? `
-    <div class="action-box" style="border-left-color:${term.accent}">
-      <div class="action-label" style="color:${term.accent}">Action</div>
-      <div class="action-body">${esc(info.a)}</div>
-    </div>` : '';
+      const trickyHtml = week.trickyWords && week.trickyWords.length
+        ? '<div class="week-tricky"><span class="wt-label">tricky:</span>' +
+          week.trickyWords.map(tw => '<span class="tricky-chip">' + tw + '</span>').join('') +
+          '</div>' : '';
 
-  const blendLabel = state.mode === 'teaching' ? 'Blending Practice' : 'Read these words';
+      const badgeHtml = isCurrentWeek
+        ? '<span class="week-current-badge">Current</span>'
+        : (week.capitals ? '<span class="week-badge">Capitals</span>' : '') +
+          (isReview      ? '<span class="week-badge">Review</span>'   : '');
 
-  const wordChips = info.w.map(w =>
-    `<span class="word-chip" style="background:${term.badge};color:${term.accent}">${esc(w)}</span>`
-  ).join('');
+      let dayCellsHtml = '';
+      if (!isReview) {
+        week.sounds.slice(0, 5).forEach((sound, di) => {
+          const dayNum    = weekStartDay + di;
+          const isDone    = dayNum < state.currentDay;
+          const isCurrent = dayNum === state.currentDay;
+          const info      = D.sounds[sound] || { w: [] };
+          const soundStr  = ds(sound);
+          const isLong    = soundStr.length > 2;
 
-  const trickyHtml = tricky ? `
-    <div class="tricky-card-section">
-      <div class="tricky-card-label">Tricky Word${tricky.length > 1 ? 's' : ''} of the Week</div>
-      <div class="tricky-card-chips">
-        ${tricky.map(tw => `<span class="tricky-chip">⭐ ${esc(tw)}</span>`).join('')}
-      </div>
-    </div>` : '';
+          dayCellsHtml +=
+            '<div class="day-cell' +
+              (isDone    ? ' done-cell'    : '') +
+              (isCurrent ? ' current-cell' : '') +
+            '" data-day="' + dayNum + '">' +
+              (isDone    ? '<div class="dc-done-tick">&#10003;</div>' : '') +
+              (isCurrent ? '<div class="dc-current-dot"></div>'       : '') +
+              '<div class="dc-label">' + D.days[di].slice(0,3).toUpperCase() + ' \u00b7 ' + dayNum + '</div>' +
+              '<div class="dc-sound' + (isLong ? ' long' : '') + '">' + soundStr + '</div>' +
+              '<div class="dc-words">' +
+                info.w.slice(0, 2).map(w => '<div class="dc-word">' + w + '</div>').join('') +
+              '</div>' +
+            '</div>';
+        });
+      }
 
-  return `
-    <div class="day-card">
-      <div class="day-card-hdr" style="background:${term.accent}">
-        <span>${esc(dayName)}</span>
-      </div>
-      <div class="day-card-body">
-        <div class="sound-row">
-          <div class="sound-badge" style="background:${term.badge};color:${term.accent};font-size:${badgeFontSize}px">
-            ${esc(ds)}
-          </div>
-          <div class="sound-emoji">${info.e}</div>
-        </div>
-        ${actionHtml}
-        <div>
-          <div class="blend-label">${blendLabel}</div>
-          <div class="word-chips">${wordChips}</div>
-        </div>
-        ${trickyHtml}
-      </div>
-    </div>`;
-}
+      const notesHtml = state.mode === 'teaching' ? (
+        '<div class="teaching-notes' + (state.mode === 'teaching' ? ' visible' : '') + '">' +
+          '<div class="tn-title">Teaching Notes</div>' +
+          '<ul class="tn-list">' +
+            '<li>Introduce each new sound with the Jolly Phonics action and story</li>' +
+            '<li>Flash cards — review all sounds taught so far, daily</li>' +
+            '<li>Blending practice: adult says phonemes, student blends into word</li>' +
+            '<li>Dictation: call words aloud, student segments and writes</li>' +
+          '</ul>' +
+        '</div>'
+      ) : '';
 
-/* ── Review Week View ────────────────────────────────────── */
-function renderReviewWeek(weekData) {
-  const term = termOf(weekData);
-  const soundChips = weekData.sounds.map(s =>
-    `<span class="review-sound-chip" style="background:${term.accent}">${esc(displaySound(s))}</span>`
-  ).join('');
-  const trickyChips = weekData.trickyWords && weekData.trickyWords.length > 0
-    ? `<div class="review-tricky">${weekData.trickyWords.map(tw =>
-        `<span class="review-tricky-chip">⭐ ${esc(tw)}</span>`).join('')}</div>` : '';
+      row.innerHTML =
+        '<div class="week-meta" data-week="' + week.week + '">' +
+          '<div class="week-num">Week ' + week.week + '</div>' +
+          '<div class="week-theme">' + week.theme + '</div>' +
+          trickyHtml + badgeHtml +
+          '<span class="week-chevron">&#9660;</span>' +
+        '</div>' +
+        (!isReview
+          ? '<div class="day-grid">' + dayCellsHtml + '</div>' + notesHtml
+          : '<div class="review-body">' +
+              '<div class="review-text">' + (week.reviewNote || '') + '</div>' +
+              '<div class="review-sounds">' +
+                week.sounds.map(s => '<span class="review-sound">' + ds(s) + '</span>').join('') +
+              '</div>' +
+            '</div>');
 
-  return `
-    <div class="review-view" style="background:${term.badge};border-color:${term.accent}">
-      <div class="review-icon">🔄</div>
-      <h3 class="review-title" style="color:${term.accent}">Consolidation &amp; Review Week</h3>
-      <p class="review-desc">${esc(weekData.reviewNote || '')}</p>
-      <div class="review-sounds">${soundChips}</div>
-      ${trickyChips}
-    </div>`;
-}
+      section.appendChild(row);
+    });
 
-/* ── Week View ───────────────────────────────────────────── */
-function renderWeekView() {
-  const weekData = D.weeks.find(w => w.week === state.selectedWeek);
-  if (!weekData) return;
-  const term = termOf(weekData);
-
-  const capitalsPill = weekData.capitals
-    ? `<span class="badge-sm" style="background:#EDE9FE;color:#6D28D9">Capitals</span>` : '';
-  const reviewPill = weekData.review
-    ? `<span class="badge-sm" style="background:#FEE2E2;color:#DC2626">Review</span>` : '';
-
-  const dayCards = weekData.review
-    ? renderReviewWeek(weekData)
-    : `<div class="day-grid">${
-        weekData.sounds.slice(0, 5).map((s, i) => renderDayCard(i, s, weekData)).join('')
-      }</div>`;
-
-  const trickyBanner = !weekData.review && weekData.trickyWords && weekData.trickyWords.length > 0 ? `
-    <div class="tricky-banner">
-      <span class="tricky-banner-star">⭐</span>
-      <div>
-        <div class="tricky-banner-label">Tricky Word${weekData.trickyWords.length > 1 ? 's' : ''} this week</div>
-        <div class="tricky-banner-chips">
-          ${weekData.trickyWords.map(tw => `<span class="tricky-banner-chip">${esc(tw)}</span>`).join('')}
-        </div>
-      </div>
-    </div>` : '';
-
-  const teachingNotes = state.mode === 'teaching' && !weekData.review ? `
-    <div class="teaching-notes">
-      <div class="teaching-notes-label">📋 Teaching Notes</div>
-      <ul>
-        <li>Introduce new sound with the Jolly Phonics action and story</li>
-        <li>Use flash cards &amp; sound books to review previous sounds</li>
-        <li>Multisensory practice: air writing, pencil hold, finger tracing</li>
-        <li>Blending practice: adult says sounds, students blend into word</li>
-        <li>Dictation: call out words, students segment and write</li>
-      </ul>
-    </div>` : '';
-
-  document.getElementById('weekView').innerHTML = `
-    <div class="week-hdr" style="border:2px solid ${term.badge}">
-      <div>
-        <div class="week-hdr-badges">
-          <span class="badge" style="background:${term.accent};color:white">Week ${weekData.week}</span>
-          <span class="badge-sm" style="background:${term.badge};color:${term.accent}">${esc(term.name)}</span>
-          ${capitalsPill}${reviewPill}
-        </div>
-        <h2 class="week-hdr-title">${esc(weekData.theme)}</h2>
-      </div>
-    </div>
-    ${dayCards}
-    ${trickyBanner}
-    ${teachingNotes}
-  `;
-}
-
-/* ── Render all ─────────────────────────────────────────── */
-function renderAll() {
-  renderSidebar();
-  renderWeekView();
-  // Sync toggle buttons
-  document.querySelectorAll('.toggle-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.mode === state.mode);
+    area.appendChild(section);
   });
+
+  attachEvents();
+  scrollToCurrentWeek();
+}
+
+function scrollToCurrentWeek() {
+  setTimeout(() => {
+    const cur = document.querySelector('.week-row.current');
+    if (cur) document.getElementById('scrollArea').scrollTop = cur.offsetTop - 40;
+  }, 100);
 }
 
 /* ── Events ─────────────────────────────────────────────── */
-document.getElementById('termList').addEventListener('click', e => {
-  const termBtn = e.target.closest('[data-term]');
-  const weekBtn = e.target.closest('[data-week]');
-  if (termBtn) {
-    const id = Number(termBtn.dataset.term);
-    state.expanded[id] = !state.expanded[id];
-    renderSidebar();
-  } else if (weekBtn) {
-    state.selectedWeek = Number(weekBtn.dataset.week);
-    saveState();
-    renderAll();
-  }
+function attachEvents() {
+  document.querySelectorAll('.week-meta').forEach(el => {
+    el.addEventListener('click', () => {
+      const wk  = Number(el.dataset.week);
+      const row = el.closest('.week-row');
+      const was = row.classList.contains('open');
+      row.classList.toggle('open', !was);
+      state.open[wk] = !was;
+      save();
+    });
+  });
+
+  document.querySelectorAll('.day-cell').forEach(el => {
+    el.addEventListener('click', e => {
+      e.stopPropagation();
+      const day = Number(el.dataset.day);
+      localStorage.setItem(DAY_KEY, String(day));
+      save();
+      window.location.href = 'index.html';
+    });
+  });
+
+  const tooltip = document.getElementById('tooltip');
+  document.querySelectorAll('.day-cell').forEach(el => {
+    el.addEventListener('mouseenter', e => {
+      const day     = Number(el.dataset.day);
+      const weekNum = weekForDay(day);
+      const week    = D.weeks.find(w => w.week === weekNum);
+      const di      = (day - 1) % 5;
+      if (!week || week.review) return;
+      const sound    = week.sounds[di];
+      const info     = D.sounds[sound] || { a: '', w: [] };
+      const soundStr = ds(sound);
+      tooltip.innerHTML =
+        '<div class="tt-sound">/' + soundStr + '/</div>' +
+        '<div class="tt-action">' + info.a + '</div>' +
+        '<div class="tt-words">'  + info.w.join(' \u00b7 ') + '</div>';
+      tooltip.classList.add('show');
+      moveTooltip(e);
+    });
+    el.addEventListener('mousemove', moveTooltip);
+    el.addEventListener('mouseleave', () => tooltip.classList.remove('show'));
+  });
+}
+
+function moveTooltip(e) {
+  const t = document.getElementById('tooltip');
+  t.style.left = Math.min(e.clientX + 12, window.innerWidth  - 220) + 'px';
+  t.style.top  = Math.min(e.clientY + 16, window.innerHeight - 120) + 'px';
+}
+
+document.querySelector('.mode-toggle').addEventListener('click', e => {
+  const btn = e.target.closest('.mode-btn');
+  if (btn) { state.mode = btn.dataset.mode; save(); render(); }
 });
 
-document.querySelector('.toggle-wrap').addEventListener('click', e => {
-  const btn = e.target.closest('.toggle-btn');
-  if (btn) {
-    state.mode = btn.dataset.mode;
-    renderAll();
-  }
-});
+/* ── Fade in ────────────────────────────────────────────── */
+document.body.style.opacity = '0';
+document.body.style.transition = 'opacity 0.6s ease';
+requestAnimationFrame(() => requestAnimationFrame(() => {
+  document.body.style.opacity = '1';
+}));
 
-/* ── Init ────────────────────────────────────────────────── */
-loadState();
-renderAll();
+render();
 </script>
 </body>
 </html>

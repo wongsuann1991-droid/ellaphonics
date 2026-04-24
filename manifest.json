@@ -1,11 +1,11 @@
 {
-  "name": "Ella Phonics",
-  "short_name": "Ella Phonics",
+  "name": "Frankel Phonics",
+  "short_name": "Frankel Phonics",
   "description": "Daily Jolly Phonics lesson planner",
-  "start_url": "./",
+  "start_url": "./splash.html",
   "display": "standalone",
-  "background_color": "#f7f5fc",
-  "theme_color": "#7c5cbf",
+  "background_color": "#f5f0e4",
+  "theme_color": "#ece5d0",
   "orientation": "portrait",
   "icons": [
     {
