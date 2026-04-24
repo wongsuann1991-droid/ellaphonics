@@ -1,4 +1,4 @@
-const CACHE = 'frankel-phonics-v2';
+const CACHE = 'frankel-phonics-v3';
 const ASSETS = [
   './',
   './index.html',
